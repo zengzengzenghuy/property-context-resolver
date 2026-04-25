@@ -36,6 +36,14 @@ _OFFENER_RX = re.compile(r"Offener\s+Betrag:?\s*([\d.,]+)\s*EUR", re.IGNORECASE)
 _MAHNSTUFE_RX = re.compile(r"Mahnstufe:?\s*(\d)", re.IGNORECASE)
 _BETRIFFT_RX = re.compile(r"Betrifft:?\s*([^\n]+)", re.IGNORECASE)
 _DATUM_RX = re.compile(r"Datum:?\s*(\d{2}\.\d{2}\.\d{4})", re.IGNORECASE)
+# Anchored at column 0 so "Sehr geehrte/r Frau X," in the greeting doesn't match.
+# Captures only the trailing name (no "Frau/Herr/Firma" prefix) so it feeds the
+# resolver clean. Title prefixes are stripped by `norm_name` anyway, but keeping
+# the value minimal makes downstream debugging easier.
+_RECIPIENT_RX = re.compile(
+    r"^(?:Frau|Herr|Firma)\s+([A-ZÄÖÜ][^\n,]+?)\s*$",
+    re.MULTILINE,
+)
 
 
 def _extract_totals(text: str) -> dict[str, float]:
@@ -212,6 +220,14 @@ def _letter_event(path: Path) -> tuple[Event, list[Fact]]:
 
     add("letter.kind", kind)
     add("letter.date", date_iso)
+
+    if text:
+        if mr := _RECIPIENT_RX.search(text):
+            # Recipient name lives on the letter entity; the DunningReconciler
+            # post-processes letters of kind=mahnung by resolving this name to
+            # a MIE-XXX via IdentityResolver and re-emitting tenant-scoped
+            # mahnung.* facts (the source-side has no resolver to do it here).
+            add("letter.recipient_name", mr.group(1).strip(), confidence=0.9)
 
     if kind == "mahnung" and text:
         if mr := _OFFENER_RX.search(text):
