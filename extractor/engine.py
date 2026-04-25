@@ -26,9 +26,14 @@ class SourceLoader:
     """Walks `raw/` and emits normalized Events from every connector."""
     root: Path
     include_incremental: bool = False
+    resolver: Optional["IdentityResolver"] = None
 
     def load(self) -> Iterator[tuple[str, Event, list[Fact]]]:
-        yield from extract_all(self.root, include_incremental=self.include_incremental)
+        yield from extract_all(
+            self.root,
+            include_incremental=self.include_incremental,
+            resolver=self.resolver,
+        )
 
 
 # ---------- 2. IdentityResolver — re-export for symmetry ----------

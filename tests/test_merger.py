@@ -1,4 +1,4 @@
-"""Unit tests for the surgical Merger.
+"""Unit tests for the surgical Merger primitives + new property/unit pipeline.
 
 Run:
     python -m unittest tests.test_merger -v
@@ -12,23 +12,23 @@ from pathlib import Path
 
 from extractor.engine import FactStore
 from extractor.merger import (
-    FLAGSHIP_TENANT,
-    PROPERTY_ID,
-    SurgicalMerger,
-    _BLOCK_RE_TMPL,
+    PropertyMerger,
+    UnitMerger,
+    _BLOCK_RE,
     _replace_blocks,
     _wrap,
 )
-from extractor.models import Fact
+from extractor.models import Fact, PROPERTY_ID
 
 
 def fact(*, fact_id: str, entity_id: str, key: str, value, source_ref: str,
+         entity_type: str | None = None,
          observed_at: str | None = None, source_event_id: str = "ev1",
          confidence: float = 1.0) -> Fact:
     return Fact(
         id=fact_id,
         property_id=PROPERTY_ID,
-        entity_type=None,
+        entity_type=entity_type,
         entity_id=entity_id,
         key=key,
         value=value,
@@ -54,18 +54,14 @@ class AutoBlockRoundTripTests(unittest.TestCase):
         rendered = {"meta": "new meta body", "other": "new other body"}
         new_text, replaced = _replace_blocks(before, rendered)
         self.assertEqual(replaced, {"meta", "other"})
-        # Human paragraph survives.
         self.assertIn("human paragraph", new_text)
-        # New bodies present, old gone.
         self.assertIn("new meta body", new_text)
         self.assertIn("new other body", new_text)
         self.assertNotIn("old meta", new_text)
-        # Header + footer survive.
         self.assertTrue(new_text.startswith("Header\n"))
         self.assertTrue(new_text.rstrip().endswith("footer"))
 
     def test_replace_blocks_skips_unknown_block_names(self):
-        """Blocks the Merger doesn't render must pass through verbatim."""
         before = (
             "<!-- auto:owned -->\nowned body\n<!-- /auto:owned -->\n"
             "<!-- auto:third_party -->\nthird-party body\n<!-- /auto:third_party -->\n"
@@ -76,135 +72,152 @@ class AutoBlockRoundTripTests(unittest.TestCase):
         self.assertIn("third-party body", new_text)
         self.assertIn("new owned", new_text)
 
-    def test_wrap_round_trip(self):
+    def test_block_regex_supports_dotted_names(self):
+        """`auto:tickets.critical` and `auto:property.display_name` must round-trip."""
+        body = "<!-- auto:tickets.critical -->\nstuff\n<!-- /auto:tickets.critical -->"
+        m = _BLOCK_RE.search(body)
+        self.assertIsNotNone(m)
+        self.assertEqual(m.group("name"), "tickets.critical")
+
+    def test_wrap_round_trip_multiline(self):
         body = "line1\nline2"
         wrapped = _wrap("section_a", body)
-        m = _BLOCK_RE_TMPL.search(wrapped)
+        m = _BLOCK_RE.search(wrapped)
         self.assertIsNotNone(m)
         self.assertEqual(m.group("name"), "section_a")
         self.assertIn("line1", m.group("body"))
 
+    def test_wrap_inline_for_short_body(self):
+        """Short single-line bodies stay inline so they can sit inside a heading."""
+        wrapped = _wrap("unit_id", "EH-019")
+        self.assertEqual(wrapped, "<!-- auto:unit_id -->EH-019<!-- /auto:unit_id -->")
 
-class SurgicalMergerTests(unittest.TestCase):
-    """End-to-end render + on-disk surgical update."""
+
+class PropertyMergerTests(unittest.TestCase):
+    """End-to-end render against the schema templates."""
 
     def setUp(self) -> None:
         self.store = FactStore()
-        # Minimal fact set — enough to populate the property + tenant blocks.
+        # Minimal stammdaten facts for property + one unit + one tenant.
+        for entity, key, value in [
+            ("LIE-001", "name", "WEG Test"),
+            ("LIE-001", "strasse", "Teststr. 1"),
+            ("LIE-001", "plz", "12345"),
+            ("LIE-001", "ort", "Berlin"),
+            ("LIE-001", "verwalter", "Test GmbH"),
+        ]:
+            self.store.add(fact(
+                fact_id=f"{entity}-{key}", entity_id=entity, entity_type="liegenschaft",
+                key=key, value=value,
+                source_ref="https://x/raw/stammdaten/x.json",
+            ))
         self.store.add(fact(
-            fact_id="f1", entity_id="LIE-001", key="name",
-            value="WEG Test", source_ref="https://x/raw/stammdaten/x.json",
+            fact_id="u1", entity_id="EH-001", entity_type="einheit",
+            key="einheit_nr", value="WE 01",
+            source_ref="https://x/raw/stammdaten/x.json",
         ))
         self.store.add(fact(
-            fact_id="f2", entity_id="LIE-001", key="strasse",
-            value="Teststr. 1", source_ref="https://x/raw/stammdaten/x.json",
-        ))
-        self.store.add(fact(
-            fact_id="f3", entity_id=FLAGSHIP_TENANT, key="vorname",
-            value="Julius", source_ref="https://x/raw/stammdaten/x.json",
-        ))
-        self.store.add(fact(
-            fact_id="f4", entity_id=FLAGSHIP_TENANT, key="einheit_id",
-            value="EH-025", source_ref="https://x/raw/stammdaten/x.json",
-        ))
-        # One payment row on the einheit.
-        self.store.add(fact(
-            fact_id="p1", entity_id="EH-025", key="payment.amount_eur",
-            value=1676.0, source_ref="https://x/raw/bank/k.csv#TX-1",
-            observed_at="2025-12-01", source_event_id="evp1",
-        ))
-        self.store.add(fact(
-            fact_id="p2", entity_id="EH-025", key="payment.direction",
-            value="credit", source_ref="https://x/raw/bank/k.csv#TX-1",
-            observed_at="2025-12-01", source_event_id="evp1",
+            fact_id="t1", entity_id="MIE-001", entity_type="mieter",
+            key="vorname", value="Julius",
+            source_ref="https://x/raw/stammdaten/x.json",
         ))
 
-    def test_render_first_run_writes_full_scaffold(self):
-        merger = SurgicalMerger(self.store)
+    def _seed_templates(self, root: Path) -> None:
+        # Copy real templates so the merger has something to scaffold from.
+        repo_root = Path(__file__).parent.parent
+        for name in ("context.property.template.md", "context.unit.template.md"):
+            src = repo_root / name
+            (root / name).write_text(src.read_text(encoding="utf-8"), encoding="utf-8")
+
+    def test_property_render_first_run_scaffolds_from_template(self):
         with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp) / "context.LIE-001.md"
-            new_text, stats = merger.render_to_file(path)
-        self.assertTrue(stats["wrote_fresh"])
-        self.assertEqual(stats["blocks_replaced"], 0)
-        # All declared blocks appear in the scaffold.
-        for name in ("property_meta", "tenant_lease", "tenant_banking",
-                     "payments_history", "communications", "maintenance",
-                     "legal_disputes"):
+            root = Path(tmp)
+            self._seed_templates(root)
+            merger = PropertyMerger.for_property(self.store, "LIE-001", root)
+            new_text, stats = merger.render_to_file()
+        # Render produced the expected file with property data.
+        self.assertIn("WEG Test", new_text)
+        self.assertIn("Teststr. 1", new_text)
+        # Auto-blocks named in the schema are present.
+        for name in ("meta", "property", "owners", "mandate", "units-index",
+                     "operations-summary", "provenance"):
             self.assertIn(f"<!-- auto:{name} -->", new_text)
             self.assertIn(f"<!-- /auto:{name} -->", new_text)
-        # Property + tenant facts rendered with citations.
-        self.assertIn("WEG Test", new_text)
-        self.assertIn("Julius", new_text)
-        # Scalar fields go through format_value → "[(source)](url)".
-        self.assertIn("[(source)](https://x/raw/stammdaten/x.json)", new_text)
-        # Payment table rendered with kind-tagged citation column.
-        self.assertIn("Amount EUR", new_text)
-        self.assertIn("1676.0", new_text)
-        self.assertIn("[(bank)]", new_text)
-        # Stats report at least the one payment row.
-        self.assertEqual(stats["payment_rows"], 1)
-
-    def test_human_edit_preserved_across_runs(self):
-        """The headline demo property: anything outside auto-blocks survives."""
-        merger = SurgicalMerger(self.store)
-        with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp) / "context.LIE-001.md"
-            merger.render_to_file(path)
-            v1 = path.read_text(encoding="utf-8")
-
-            # Plant a human edit in two places: the Notes section, and a stray
-            # line above the auto-blocks (to prove arbitrary placement works).
-            v1 = v1.replace(
-                "## Human Notes\n",
-                "## Human Notes\n\n- Mieter ist konfliktfreudig.\n",
-            )
-            v1 = "<!-- HUMAN-OWNED-MARKER -->\n" + v1
-            path.write_text(v1, encoding="utf-8")
-
-            # Re-run — auto-blocks updated, human bits preserved.
-            merger2 = SurgicalMerger(self.store)
-            new_text, stats = merger2.render_to_file(path)
-
-        self.assertFalse(stats["wrote_fresh"])
         self.assertGreater(stats["blocks_replaced"], 0)
+
+    def test_human_edits_preserved_across_runs(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self._seed_templates(root)
+            out = root / "context.property.LIE-001.md"
+
+            PropertyMerger.for_property(self.store, "LIE-001", root).render_to_file()
+            v1 = out.read_text(encoding="utf-8")
+
+            v1 = "<!-- HUMAN-OWNED-MARKER -->\n" + v1 + "\n## Human Notes\n- Note A\n"
+            out.write_text(v1, encoding="utf-8")
+
+            new_text, _ = PropertyMerger.for_property(self.store, "LIE-001", root).render_to_file()
+
         self.assertIn("HUMAN-OWNED-MARKER", new_text)
-        self.assertIn("Mieter ist konfliktfreudig", new_text)
-        # Engine block content still present.
+        self.assertIn("Note A", new_text)
+        # Engine block still rewritten.
         self.assertIn("WEG Test", new_text)
 
-    def test_unknown_existing_block_is_passed_through(self):
-        """If the file carries an auto-block we don't render, we must not
-        delete it — the user might have a downstream tool managing it."""
-        merger = SurgicalMerger(self.store)
-        seed = (
-            "<!-- auto:property_meta -->\nstale\n<!-- /auto:property_meta -->\n"
-            "<!-- auto:downstream_tool -->\nkeep me\n<!-- /auto:downstream_tool -->\n"
-        )
+    def test_unknown_existing_block_passes_through(self):
         with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp) / "context.LIE-001.md"
-            path.write_text(seed, encoding="utf-8")
-            new_text, _ = merger.render_to_file(path)
-        # Our block was rewritten ...
+            root = Path(tmp)
+            self._seed_templates(root)
+            out = root / "context.property.LIE-001.md"
+            out.write_text(
+                "<!-- auto:property -->\nstale\n<!-- /auto:property -->\n"
+                "<!-- auto:downstream_tool -->\nkeep me\n<!-- /auto:downstream_tool -->\n",
+                encoding="utf-8",
+            )
+            new_text, _ = PropertyMerger.for_property(self.store, "LIE-001", root).render_to_file()
         self.assertNotIn("stale", new_text)
-        self.assertIn("WEG Test", new_text)
-        # ... but the downstream block is intact.
+        # `property` block was re-rendered with the address from facts.
+        self.assertIn("Teststr. 1", new_text)
         self.assertIn("<!-- auto:downstream_tool -->", new_text)
         self.assertIn("keep me", new_text)
 
-    def test_missing_block_is_appended_on_schema_growth(self):
-        """If the schema adds a new block name, the file gets it appended
-        rather than silently lost."""
-        merger = SurgicalMerger(self.store)
-        # Seed a file that only carries the property_meta block — older schema.
-        seed = "<!-- auto:property_meta -->\nold\n<!-- /auto:property_meta -->\n"
+
+class UnitMergerTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.store = FactStore()
+        self.store.add(fact(
+            fact_id="u1", entity_id="EH-019", entity_type="einheit",
+            key="einheit_nr", value="WE 19",
+            source_ref="https://x/raw/stammdaten/x.json",
+        ))
+        self.store.add(fact(
+            fact_id="u2", entity_id="EH-019", entity_type="einheit",
+            key="haus_id", value="HAUS-14",
+            source_ref="https://x/raw/stammdaten/x.json",
+        ))
+        self.store.add(fact(
+            fact_id="t1", entity_id="MIE-025", entity_type="mieter",
+            key="einheit_id", value="EH-019",
+            source_ref="https://x/raw/stammdaten/x.json",
+        ))
+        self.store.add(fact(
+            fact_id="t2", entity_id="MIE-025", entity_type="mieter",
+            key="vorname", value="Jasmin",
+            source_ref="https://x/raw/stammdaten/x.json",
+        ))
+
+    def test_unit_render_includes_unit_id_in_title(self):
         with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp) / "context.LIE-001.md"
-            path.write_text(seed, encoding="utf-8")
-            new_text, stats = merger.render_to_file(path)
-        self.assertEqual(stats["blocks_replaced"], 1)
-        self.assertGreaterEqual(stats["blocks_appended"], 1)
-        # A block introduced later in the schema must now exist in the file.
-        self.assertIn("<!-- auto:tenant_lease -->", new_text)
+            root = Path(tmp)
+            (root / "context.unit.template.md").write_text(
+                (Path(__file__).parent.parent / "context.unit.template.md").read_text(encoding="utf-8"),
+                encoding="utf-8",
+            )
+            new_text, _ = UnitMerger.for_unit(self.store, "EH-019", root).render_to_file()
+        self.assertIn("<!-- auto:unit_id -->EH-019<!-- /auto:unit_id -->", new_text)
+        self.assertIn("WE 19", new_text)
+        # Tenant on this unit is rendered in the tenants table.
+        self.assertIn("MIE-025", new_text)
 
 
 if __name__ == "__main__":

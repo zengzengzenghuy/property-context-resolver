@@ -3,7 +3,10 @@
     python run.py raw/ [--out out] [--include-incremental]
 
 Wires the engine in the order Sprint.md prescribes:
-    SourceLoader -> NoiseFilter -> FactExtractor (identity) -> FactStore -> Merger
+    SourceLoader -> NoiseFilter -> FactExtractor (identity) -> FactStore
+                 -> DunningReconciler (per active lease)
+                 -> PropertyAggregator (engine.aggregation-rules.md §5.1)
+                 -> PropertyMerger + UnitMerger (per spine-v2-split schema)
 """
 
 from __future__ import annotations
@@ -14,6 +17,7 @@ from collections import Counter
 from datetime import date
 from pathlib import Path
 
+from extractor.aggregator import PropertyAggregator
 from extractor.engine import (
     DunningReconciler,
     FactExtractor,
@@ -22,16 +26,21 @@ from extractor.engine import (
     SourceLoader,
 )
 from extractor.identity import IdentityResolver
-from extractor.merger import FLAGSHIP_TENANT, SurgicalMerger
-from extractor.models import JsonlWriter
+from extractor.merger import PropertyMerger, UnitMerger
+from extractor.models import JsonlWriter, PROPERTY_ID
 from extractor.sb import SupabaseSink
 from extractor.source_ref import configure as configure_source_ref
+
+
+FLAGSHIP_UNIT_FOR_INDEX = "EH-019"  # marked in §2 units-index `unit_md_ref` col
 
 
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="run", description="property-context-resolver pipeline")
     p.add_argument("raw", help="path to raw/ directory")
-    p.add_argument("--out", default="out", help="output dir for events.jsonl + facts.jsonl + context.md")
+    p.add_argument("--out", default="out", help="output dir for events.jsonl + facts.jsonl")
+    p.add_argument("--repo-root", default=None,
+                   help="root for context.property/unit.*.md output (defaults to cwd)")
     p.add_argument("--include-incremental", action="store_true",
                    help="Include raw/incremental/* (off by default per Sprint.md)")
     p.add_argument("--source-ref-base", default=None,
@@ -46,12 +55,17 @@ def main(argv: list[str] | None = None) -> int:
     raw_root = Path(args.raw).resolve()
     out_dir = Path(args.out).resolve()
     out_dir.mkdir(parents=True, exist_ok=True)
+    repo_root = Path(args.repo_root).resolve() if args.repo_root else Path.cwd().resolve()
 
-    # 1. Load
-    loader = SourceLoader(raw_root, include_incremental=args.include_incremental)
-
-    # 2. Identity resolver (built from stammdaten)
+    # 1. Identity resolver (built from stammdaten — needed by emails extractor).
     resolver = IdentityResolver(raw_root)
+
+    # 2. Load
+    loader = SourceLoader(
+        raw_root,
+        include_incremental=args.include_incremental,
+        resolver=resolver,
+    )
 
     # 3. Noise filter
     noise = NoiseFilter()
@@ -64,9 +78,7 @@ def main(argv: list[str] | None = None) -> int:
     facts_path = out_dir / "facts.jsonl"
 
     # On an incremental run, rehydrate from the previous run's audit log so the
-    # second pass can detect conflicts against history (and the JSONL stays
-    # append-only across runs). Dedup is by fact.id, so this is a no-op on
-    # facts the engine re-emits identically.
+    # second pass can detect conflicts against history.
     prior = 0
     if args.include_incremental and facts_path.exists():
         prior = store.load_jsonl(facts_path)
@@ -81,87 +93,105 @@ def main(argv: list[str] | None = None) -> int:
             store.add_many(extractor.enrich(event, facts))
             by_source[src] += 1
 
-    # 5b. Dunning reconciler — derive `dunning.*` roll-up facts on the flagship
-    # tenant entity (and project Mahnung facts onto the tenant). These power
-    # the legal_disputes block in the merger and the LLM Q&A in Hour 4-5.
+    # 5b. DunningReconciler — derive `dunning.*` roll-up facts on every active
+    # tenant. An "active" lease is one with a `mietbeginn` and no `mietende`.
     today = args.today or date.today().isoformat()
     bank_csv_ref = ""
     for f in store.all_facts():
         if "/raw/bank/" in (f.source_ref or ""):
             bank_csv_ref = f.source_ref.split("#", 1)[0]
             break
+
+    active_tenants: list[str] = []
+    seen_tenants: set[str] = set()
+    for fact in store.all_facts():
+        if fact.entity_type != "mieter" or not fact.entity_id:
+            continue
+        if fact.entity_id in seen_tenants:
+            continue
+        seen_tenants.add(fact.entity_id)
+        beg = store.latest(fact.entity_id, "mietbeginn")
+        end = store.latest(fact.entity_id, "mietende")
+        if beg and (end is None or end.value in (None, "")):
+            active_tenants.append(fact.entity_id)
+
     dunning = DunningReconciler(
         store=store,
         resolver=resolver,
         today=today,
         bank_csv_ref=bank_csv_ref,
     )
-    dunning_emitted = dunning.reconcile(FLAGSHIP_TENANT)
+    dunning_emitted = 0
+    for tid in active_tenants:
+        dunning_emitted += dunning.reconcile(tid)
+
+    # 5c. PropertyAggregator — implements engine.aggregation-rules.md §5.1.
+    # Emits `operations.*` facts on LIE-001 from the unit-scoped state.
+    aggregator = PropertyAggregator(store=store, today=today, property_id=PROPERTY_ID)
+    aggregator_emitted = aggregator.aggregate()
 
     n_facts = store.write_jsonl(facts_path)
 
-    # 6. Merger — surgical render. Replaces only the inside of `<!-- auto:NAME -->`
-    # blocks; ## Human Notes and any other human-owned content survives.
-    merger = SurgicalMerger(store)
-    context_md = out_dir / "context.LIE-001.md"
-    new_text, merger_stats = merger.render_to_file(context_md)
+    # 6. Merger — surgical render to per-property + per-unit files.
+    property_merger = PropertyMerger.for_property(
+        store=store,
+        property_id=PROPERTY_ID,
+        repo_root=repo_root,
+        flagship_unit=FLAGSHIP_UNIT_FOR_INDEX,
+    )
+    property_text, property_stats = property_merger.render_to_file()
 
-    # Conflict tally. Two flavors:
-    #   raw_conflicts — every (entity, key) bucket with ≥2 distinct values above
-    #     the floor. Inflated by time-series keys (payment.*, communication.*)
-    #     where every observation is correctly a different value.
-    #   merge_conflicts — restricted to identity/contract scalar keys; these are
-    #     the ones the Merger surfaces with <!-- conflict --> markers.
-    # Scalar identity/contract keys (bare, no namespace) — these are the ones
-    # the Merger surfaces in context.md. Namespaced keys like `payment.iban`
-    # or `communication.from` are per-event/per-transaction and aggregated
-    # elsewhere, so we don't conflict-flag them.
-    SCALAR_KEYS = {
-        "email", "telefon", "iban", "bic", "strasse", "plz", "ort",
-        "kaltmiete", "nk_vorauszahlung", "kaution", "mietbeginn", "mietende",
-        "anrede", "vorname", "nachname", "firma",
-    }
-    raw_conflicts = 0
-    merge_conflicts = 0
-    for (eid, key), _ in store._buckets.items():
-        if store.is_conflicted(eid, key):
-            raw_conflicts += 1
-            if key in SCALAR_KEYS:
-                merge_conflicts += 1
+    unit_ids = sorted({
+        f.entity_id for f in store.all_facts()
+        if f.entity_type == "einheit" and f.entity_id
+    })
+    unit_stats = {"rendered": 0, "fresh": 0, "blocks_replaced": 0}
+    for uid in unit_ids:
+        unit_merger = UnitMerger.for_unit(store=store, unit_id=uid, repo_root=repo_root)
+        _text, stats = unit_merger.render_to_file()
+        unit_stats["rendered"] += 1
+        unit_stats["fresh"] += 1 if stats["wrote_fresh"] else 0
+        unit_stats["blocks_replaced"] += stats["blocks_replaced"]
 
-    # 7. Mirror to Supabase. No-op when SUPABASE_URL/SERVICE_KEY are unset, so
-    # this stays a soft dependency — the engine still produces local files in
-    # CI / on a fresh clone.
+    # Conflict tally — single combined count over the whole store.
+    raw_conflicts = sum(
+        1 for (eid, key), _ in store._buckets.items()
+        if store.is_conflicted(eid, key)
+    )
+
+    # 7. Mirror to Supabase (no-op when SUPABASE_URL/SERVICE_KEY are unset).
     sb = SupabaseSink.from_env()
     diff_summary = (
-        f"facts={n_facts}, conflicts(scalar)={merge_conflicts}, "
-        f"payments={merger_stats['payment_rows']}, "
-        f"communications={merger_stats['communication_rows']}, "
-        f"mahnungen={merger_stats.get('mahnung_rows', 0)}, "
-        f"dunning={dunning_emitted}, "
-        f"blocks_replaced={merger_stats['blocks_replaced']}, "
-        f"wrote_fresh={merger_stats['wrote_fresh']}"
+        f"facts={n_facts}, conflicts={raw_conflicts}, "
+        f"dunning_facts={dunning_emitted}, "
+        f"aggregator_facts={aggregator_emitted}, "
+        f"units_rendered={unit_stats['rendered']}, "
+        f"property_blocks={property_stats['blocks_replaced']}"
     )
-    name = (store.latest("LIE-001", "name").value if store.latest("LIE-001", "name") else None)
+    name = (store.latest(PROPERTY_ID, "name").value if store.latest(PROPERTY_ID, "name") else None)
     address = None
-    s = store.latest("LIE-001", "strasse")
-    z = store.latest("LIE-001", "plz")
-    o = store.latest("LIE-001", "ort")
+    s = store.latest(PROPERTY_ID, "strasse")
+    z = store.latest(PROPERTY_ID, "plz")
+    o = store.latest(PROPERTY_ID, "ort")
     if s and o:
         address = f"{s.value}, {z.value if z else ''} {o.value}".strip()
     if sb.enabled:
-        sb.upsert_context("LIE-001", new_text, name=name, address=address)
-        sb.log_update("LIE-001", source_filename=str(context_md.name), diff_summary=diff_summary)
+        sb.upsert_context(PROPERTY_ID, property_text, name=name, address=address)
+        sb.log_update(PROPERTY_ID, source_filename=f"context.property.{PROPERTY_ID}.md",
+                      diff_summary=diff_summary)
 
-    print(f"events:          {sum(by_source.values()):>5}  -> {events_path}")
-    print(f"facts:           {n_facts:>5}  -> {facts_path}  (loaded {prior} prior)")
-    print(f"conflicts (raw): {raw_conflicts:>5}  (incl. time-series)")
-    print(f"conflicts (merge):{merge_conflicts:>4}  (scalar identity/contract keys)")
-    print(f"context.md:      {context_md}  ({diff_summary})")
-    print(f"supabase:        {'wrote' if sb.enabled else 'skipped (no SUPABASE_URL/SERVICE_KEY)'}")
+    print(f"events:           {sum(by_source.values()):>5}  -> {events_path}")
+    print(f"facts:            {n_facts:>5}  -> {facts_path}  (loaded {prior} prior)")
+    print(f"conflicts:        {raw_conflicts:>5}")
+    print(f"dunning facts:    {dunning_emitted:>5}  ({len(active_tenants)} active leases)")
+    print(f"aggregator facts: {aggregator_emitted:>5}")
+    print(f"property file:    {repo_root / f'context.property.{PROPERTY_ID}.md'}")
+    print(f"unit files:       {unit_stats['rendered']:>5} rendered "
+          f"({unit_stats['fresh']} fresh, {unit_stats['blocks_replaced']} block replacements)")
+    print(f"supabase:         {'wrote' if sb.enabled else 'skipped (no SUPABASE_URL/SERVICE_KEY)'}")
     print("\nevents by source:")
-    for s, n in by_source.most_common():
-        print(f"  {s:<12} {n:>6}")
+    for src, n in by_source.most_common():
+        print(f"  {src:<12} {n:>6}")
     return 0
 
 
