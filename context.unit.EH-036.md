@@ -5,11 +5,13 @@
 > **Property-wide data lives in `context.property.md`** — see `parent_property_ref` below.
 
 <!-- auto:meta -->
-- last_built_at: `2026-04-25T20:04:23+00:00`
+- last_built_at: `2026-04-25T20:52:56+00:00`
 - build_hash: `engine-v2`
 - engine_version: `0.2.0`
 - schema_version: `spine-v2-split` (2026-04-25)
 - file_role: `unit`
+- unit_id: `EH-036`
+- property_id: `LIE-001`
 - parent_property_ref: `context.property.LIE-001.md`
 - owner_ref: `EIG-012`
 <!-- /auto:meta -->
@@ -65,7 +67,11 @@ _(no data in source yet)_
 - live source: `db.tickets WHERE unit_id=EH-036 AND status='open'`
 <!-- /auto:tickets.aggregate -->
 
-### 3.3 Active Mahnverfahren (per claim)
+### 3.3 Active Mahnverfahren
+
+<!-- auto:dunning.summary -->_no issue_<!-- /auto:dunning.summary -->
+
+#### Per claim
 <!-- auto:dunning -->
 | tenant_ref | claim_id | current_stage | amount_open | default_since | deadline_for_stage | last_letter |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -128,7 +134,7 @@ _(no data in source yet)_
 | `20251103_063200_EMAIL-06028-eml` | email | [emails/2025-11/20251103_063200_EMAIL-06028.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-11/20251103_063200_EMAIL-06028.eml) | 2025-11-03T06:32:00+00:00 |
 | `20251128_100300_EMAIL-06249-eml` | email | [emails/2025-11/20251128_100300_EMAIL-06249.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-11/20251128_100300_EMAIL-06249.eml) | 2025-11-28 |
 | `20251210_085300_EMAIL-06344-eml` | email | [emails/2025-12/20251210_085300_EMAIL-06344.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251210_085300_EMAIL-06344.eml) | 2025-12-10T08:53:00+00:00 |
-| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-25T20:04:11+00:00 |
+| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-25T20:52:09+00:00 |
 <!-- /auto:provenance -->
 
 ---

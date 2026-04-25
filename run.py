@@ -145,10 +145,15 @@ def main(argv: list[str] | None = None) -> int:
         f.entity_id for f in store.all_facts()
         if f.entity_type == "einheit" and f.entity_id
     })
-    unit_stats = {"rendered": 0, "fresh": 0, "blocks_replaced": 0}
+    unit_stats = {"rendered": 0, "fresh": 0, "blocks_replaced": 0, "sb_upserted": 0}
+    rendered_units: list[tuple[str, str]] = []  # (unit_id, rendered_text)
     for uid in unit_ids:
-        unit_merger = UnitMerger.for_unit(store=store, unit_id=uid, repo_root=repo_root)
-        _text, stats = unit_merger.render_to_file()
+        unit_merger = UnitMerger.for_unit(
+            store=store, unit_id=uid, repo_root=repo_root, property_id=PROPERTY_ID,
+            today=today,
+        )
+        text, stats = unit_merger.render_to_file()
+        rendered_units.append((uid, text))
         unit_stats["rendered"] += 1
         unit_stats["fresh"] += 1 if stats["wrote_fresh"] else 0
         unit_stats["blocks_replaced"] += stats["blocks_replaced"]
@@ -179,6 +184,27 @@ def main(argv: list[str] | None = None) -> int:
         sb.upsert_context(PROPERTY_ID, property_text, name=name, address=address)
         sb.log_update(PROPERTY_ID, source_filename=f"context.property.{PROPERTY_ID}.md",
                       diff_summary=diff_summary)
+        # Mirror each per-unit file. Pulls the label (e.g., "WE 19") and
+        # occupancy from the store so the units row carries the same shape
+        # the property's units-index column shows.
+        for uid, text in rendered_units:
+            label_f = store.latest(uid, "einheit_nr")
+            occ_f = store.latest(uid, "occupancy_status")
+            ok = sb.upsert_unit(
+                unit_id=uid,
+                property_id=PROPERTY_ID,
+                context_md=text,
+                label=label_f.value if label_f else None,
+                occupancy=occ_f.value if occ_f else None,
+            )
+            if ok:
+                sb.log_update(
+                    PROPERTY_ID,
+                    source_filename=f"context.unit.{uid}.md",
+                    diff_summary=f"unit={uid}",
+                    unit_id=uid,
+                )
+                unit_stats["sb_upserted"] += 1
 
     print(f"events:           {sum(by_source.values()):>5}  -> {events_path}")
     print(f"facts:            {n_facts:>5}  -> {facts_path}  (loaded {prior} prior)")
@@ -188,7 +214,10 @@ def main(argv: list[str] | None = None) -> int:
     print(f"property file:    {repo_root / f'context.property.{PROPERTY_ID}.md'}")
     print(f"unit files:       {unit_stats['rendered']:>5} rendered "
           f"({unit_stats['fresh']} fresh, {unit_stats['blocks_replaced']} block replacements)")
-    print(f"supabase:         {'wrote' if sb.enabled else 'skipped (no SUPABASE_URL/SERVICE_KEY)'}")
+    if sb.enabled:
+        print(f"supabase:         wrote (property + {unit_stats['sb_upserted']}/{unit_stats['rendered']} units)")
+    else:
+        print("supabase:         skipped (no SUPABASE_URL/SERVICE_KEY)")
     print("\nevents by source:")
     for src, n in by_source.most_common():
         print(f"  {src:<12} {n:>6}")

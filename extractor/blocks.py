@@ -18,6 +18,7 @@ from typing import Any, Callable, Iterable, Optional
 
 from .engine import FactStore, _source_from_ref, format_value
 from .models import Fact
+from .summarizer import get_summarizer
 
 
 # ---------- helpers ----------
@@ -113,6 +114,7 @@ def render_property_meta(store: FactStore, ctx: dict[str, Any]) -> str:
 
 def render_unit_meta(store: FactStore, ctx: dict[str, Any]) -> str:
     unit_id = ctx["unit_id"]
+    property_id = ctx.get("property_id", "LIE-001")
     # owner_ref: walk eigentuemer, find one whose einheit_ids includes this unit
     owner_ref = "—"
     for eig in _entity_ids_by_type(store, "eigentuemer"):
@@ -120,13 +122,15 @@ def render_unit_meta(store: FactStore, ctx: dict[str, Any]) -> str:
         if f and isinstance(f.value, list) and unit_id in f.value:
             owner_ref = f"`{eig}`"
             break
-    parent = "`context.property.LIE-001.md`"
+    parent = f"`context.property.{property_id}.md`"
     return _bullets([
         ("last_built_at", f"`{_now_iso()}`"),
         ("build_hash", f"`{ctx.get('build_hash', 'engine-v2')}`"),
         ("engine_version", f"`{ctx.get('engine_version', '0.2.0')}`"),
         ("schema_version", "`spine-v2-split` (2026-04-25)"),
         ("file_role", "`unit`"),
+        ("unit_id", f"`{unit_id}`"),
+        ("property_id", f"`{property_id}`"),
         ("parent_property_ref", parent),
         ("owner_ref", owner_ref),
     ])
@@ -721,6 +725,87 @@ def render_tickets_aggregate(store: FactStore, ctx: dict[str, Any]) -> str:
     ])
 
 
+# Dunning signal keys to surface for the LLM. Anchors the four Golden Rule
+# elements: issue (mahnstufe/months/offener), contract (lease.*), law (named in
+# the system prompt), timeline (last_payment_date + today).
+_DUNNING_SIGNAL_KEYS = (
+    "dunning.mahnstufe",
+    "dunning.months_overdue_count",
+    "dunning.offener_betrag_eur",
+    "dunning.verzugszinsen_eur",
+    "dunning.expected_eur",
+    "dunning.last_payment_date",
+)
+_DUNNING_LEASE_KEYS = ("kaltmiete", "nk_vorauszahlung")
+
+
+def _dunning_signal(
+    store: FactStore, tenant_ids: list[str],
+) -> tuple[dict[str, dict[str, Any]], list[dict[str, str]]]:
+    """Pre-filter dunning facts into the Trifecta payload for the LLM.
+
+    Returns `(signal_by_tenant, references)`. A tenant with no `mahnstufe`
+    contributes nothing — that's the noise filter.
+    """
+    signal: dict[str, dict[str, Any]] = {}
+    refs: list[dict[str, str]] = []
+    seen_refs: set[str] = set()
+
+    def _track(label: str, ref: Optional[str]) -> None:
+        if ref and ref not in seen_refs:
+            refs.append({"label": label, "url": ref})
+            seen_refs.add(ref)
+
+    for tid in tenant_ids:
+        stufe = store.latest(tid, "dunning.mahnstufe")
+        if not stufe or not stufe.value:
+            continue  # nothing to summarize for this tenant
+        per_tenant: dict[str, Any] = {}
+        for key in _DUNNING_SIGNAL_KEYS:
+            f = store.latest(tid, key)
+            if f and f.value not in (None, ""):
+                per_tenant[key] = f.value
+                _track(_source_from_ref(f.source_ref) or "source", f.source_ref)
+        for key in _DUNNING_LEASE_KEYS:
+            f = store.latest(tid, key)
+            if f and f.value not in (None, ""):
+                per_tenant[f"lease.{key}"] = f.value
+                _track("stammdaten", f.source_ref)
+        signal[tid] = per_tenant
+    return signal, refs
+
+
+def render_dunning_summary(store: FactStore, ctx: dict[str, Any]) -> str:
+    """Signal-First TL;DR for the dunning block.
+
+    Pre-filters dunning + lease anchors per the Trifecta (Contract/Law/Logic)
+    and asks the LLM to render 3 sentences with triage tag. Falls back to a
+    deterministic one-liner when the API key is missing — pipeline never breaks.
+    """
+    tenant_ids = ctx.get("tenant_ids") or []
+    signal, refs = _dunning_signal(store, tenant_ids)
+    if not signal:
+        return "_no issue_"
+
+    # Deterministic fallback: lists tenants + open balance, no narrative.
+    parts = []
+    for tid, s in signal.items():
+        offen = s.get("dunning.offener_betrag_eur")
+        stufe = s.get("dunning.mahnstufe")
+        amt = f"{offen:.2f} EUR" if isinstance(offen, (int, float)) else "—"
+        parts.append(f"`{tid}`: Mahnstufe {stufe}, offen {amt}")
+    fallback = "[Routine] " + "; ".join(parts) + " (siehe Tabelle unten)."
+
+    summarizer = ctx.get("summarizer") or get_summarizer()
+    return summarizer.summarize(
+        signal,
+        section="dunning",
+        fallback=fallback,
+        references=refs,
+        today=ctx.get("today"),
+    )
+
+
 def render_dunning(store: FactStore, ctx: dict[str, Any]) -> str:
     headers = ["tenant_ref", "claim_id", "current_stage", "amount_open",
                "default_since", "deadline_for_stage", "last_letter"]
@@ -916,6 +1001,7 @@ UNIT_BLOCKS: dict[str, Callable[[FactStore, dict[str, Any]], str]] = {
     "tenants": render_tenants,
     "tickets.critical": render_tickets_critical,
     "tickets.aggregate": render_tickets_aggregate,
+    "dunning.summary": render_dunning_summary,
     "dunning": render_dunning,
     "reductions": render_reductions,
     "handover": render_handover,

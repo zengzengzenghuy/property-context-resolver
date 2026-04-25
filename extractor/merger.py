@@ -150,6 +150,8 @@ class UnitMerger(_BaseMerger):
         store: FactStore,
         unit_id: str,
         repo_root: Path,
+        property_id: str = "LIE-001",
+        today: Optional[str] = None,
     ) -> "UnitMerger":
         # Tenants on this unit (resolves once per render).
         tenant_ids: list[str] = []
@@ -166,7 +168,9 @@ class UnitMerger(_BaseMerger):
             blocks=UNIT_BLOCKS,
             ctx={
                 "unit_id": unit_id,
+                "property_id": property_id,
                 "tenant_ids": tenant_ids,
+                "today": today,
             },
         )
 

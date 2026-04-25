@@ -1,14 +1,17 @@
-# context.unit.EH-019.md — WE 19, Immanuelkirchstraße 26
+# context.unit.<!-- auto:unit_id -->EH-019<!-- /auto:unit_id -->.md
 
-> Per-unit dossier for EH-019 (Jasmin Trub). Hand-populated demo from raw data, 2026-04-25.
-> Property-wide context: `context.property.LIE-001.md`.
+> Per-unit dossier (one file per Einheit). Holds everything specific to this unit:
+> the unit itself, the active lease, the tenant(s), and all unit/tenant-specific operations.
+> **Property-wide data lives in `context.property.md`** — see `parent_property_ref` below.
 
 <!-- auto:meta -->
-- last_built_at: `2026-04-25T20:04:22+00:00`
+- last_built_at: `2026-04-25T20:52:33+00:00`
 - build_hash: `engine-v2`
 - engine_version: `0.2.0`
 - schema_version: `spine-v2-split` (2026-04-25)
 - file_role: `unit`
+- unit_id: `EH-019`
+- property_id: `LIE-001`
 - parent_property_ref: `context.property.LIE-001.md`
 - owner_ref: `EIG-014`
 <!-- /auto:meta -->
@@ -36,7 +39,7 @@
 
 ---
 
-## 2. Lease (Mietverhältnis)
+## 2. Lease (Mietverhältnis, voll)
 <!-- auto:lease -->
 - lease_id: `LEASE-MIE-025`
 - unit_ref: `EH-019`
@@ -64,7 +67,7 @@
 
 ## 3. Operations (this unit / this tenant)
 
-### 3.1 Open Tickets — Critical
+### 3.1 Open Tickets — Critical (overdue or due ≤7 days)
 <!-- auto:tickets.critical -->
 | ticket_id | type | title | deadline | status | assignee |
 | --- | --- | --- | --- | --- | --- |
@@ -88,6 +91,10 @@
 <!-- /auto:tickets.aggregate -->
 
 ### 3.3 Active Mahnverfahren
+
+<!-- auto:dunning.summary -->[Routine] Mieter MIE-025 ist seit vier Monaten im Verzug; offener Betrag 4.824,00 EUR zzgl. 61,79 EUR Verzugszinsen, letzte Zahlung 2025-12-01 [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-01557). Vertraglich geschuldet sind monatlich 1.206,00 EUR (Kaltmiete 1.031,00 EUR + NK 175,00 EUR) [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#mieter/MIE-025). Verzug nach § 286 BGB, Verzugszinsen § 288 I BGB; Mahnstufe 1 seit 2024-11-16 [(letter)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2024-11/20241116_mahnung_LTR-0043.pdf), nächster Schritt: 2. Mahnung nach 14 Tagen.<!-- /auto:dunning.summary -->
+
+#### Per claim
 <!-- auto:dunning -->
 | tenant_ref | claim_id | current_stage | amount_open | default_since | deadline_for_stage | last_letter |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -128,19 +135,19 @@
 ### 3.5 Latest Übergabeprotokoll
 <!-- auto:handover -->_(no data in source yet)_<!-- /auto:handover -->
 
-### 3.6 Recurring Process State
+### 3.6 Recurring Process State (this unit, in-flight)
 <!-- auto:recurring -->
 | process_type | started | current_step | owner | eta | blockers |
 | --- | --- | --- | --- | --- | --- |
 | Mieterwechsel | 2025-10-25 | Kündigung erhalten | Verwaltung | TBD | Übergabe-Termin offen |
 <!-- /auto:recurring -->
 
-### 3.7 Vermietungs-Pipeline
+### 3.7 Vermietungs-Pipeline *(if vacant)*
 <!-- auto:vermietung -->_Not yet activated. Triggers when occupancy_status flips to vacant after move-out._<!-- /auto:vermietung -->
 
 ---
 
-## 4. Decisions & History
+## 4. Decisions & History (this unit / this tenant)
 
 ### 4.1 Tenant Special Agreements
 <!-- auto:tenant-agreements -->
@@ -248,9 +255,9 @@ _(no data in source yet)_
 | `20251207_090900_EMAIL-06317-eml` | email | [emails/2025-12/20251207_090900_EMAIL-06317.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251207_090900_EMAIL-06317.eml) | 2025-12-07T09:09:00+00:00 |
 | `20251211_162500_EMAIL-06357-eml` | email | [emails/2025-12/20251211_162500_EMAIL-06357.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251211_162500_EMAIL-06357.eml) | 2025-12-11T16:25:00+00:00 |
 | `20251212_092500_EMAIL-06364-eml` | email | [emails/2025-12/20251212_092500_EMAIL-06364.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251212_092500_EMAIL-06364.eml) | 2025-12-12T09:25:00+00:00 |
-| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-25T20:04:11+00:00 |
+| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-25T20:52:09+00:00 |
 <!-- /auto:provenance -->
 
 ---
 
-*Schema: spine-v2-split (2026-04-25). Property-wide data in `context.property.LIE-001.md`.*
+*Schema: spine-v2-split (2026-04-25). See `context.property.md` for owner, mandate, vendors, utilities, authorities, policies, WEG-decisions, compliance calendar.*

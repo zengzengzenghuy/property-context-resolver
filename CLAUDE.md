@@ -80,6 +80,7 @@ out/                         pipeline outputs (gitignored or versioned by you)
 | 4 | FactExtractor     | 🟢 partial | Rule-based for all sources; LLM enrichment slot empty |
 | 5 | FactStore         | ✅ done  | Bucketed `(entity_id, key)` index, append-only dedup, conflict detection at confidence floor 0.7, `latest()` with full priority tie-break, JSONL round-trip with id-based dedup. 23 unit tests. |
 | 6 | Merger            | ❌ stub  | One-line placeholder. **`format_value()` helper is built and tested**; rendering plumbing waits on Karl's section schema. |
+| 7 | Summarizer        | 🟢 partial | `extractor/summarizer.py` — Claude wrapper for `<!-- auto:*.summary -->` blocks. Signal-First philosophy in the system prompt, file-cached at `out/llm_cache/summary.json`, no-ops gracefully without `ANTHROPIC_API_KEY`. Wired for unit `dunning.summary`; other blocks pending. |
 
 ## Conventions and gotchas
 
@@ -163,6 +164,33 @@ has `quoted-printable` encoding leaking through, so `R=C3=B6hricht` and
 **No Postgres / no vector DB.** Per `Tech Stack.md` we are deliberately not
 building those for v1. The fact store is JSONL on disk.
 
+**LLM summaries are signal-only — never filter noise in the prompt.** The
+Summarizer (`extractor/summarizer.py`) follows the user's "Signal-First
+Property Management Philosophy" / Trifecta of Truth (Contract / Law / Logic).
+Salience extraction is **deterministic Python** in `blocks.py` (e.g.
+`_dunning_signal()`): it pre-filters by confidence, key allowlist, recency,
+and anomaly status before the LLM sees anything. The model's only job is to
+render that already-curated payload as ≤3 German sentences with a triage tag,
+the four Golden Rule elements (issue / contract / law / timeline), and
+preserved `[(label)](url)` citations. **Never put filtering instructions in
+the system prompt** — Claude is bad at "ignore the boring stuff" and good at
+"summarize this list".
+
+**Summarizer degrades gracefully.** Missing `ANTHROPIC_API_KEY`, missing
+`anthropic` package, or any API error (incl. 401) → the `render_*_summary`
+fn returns the deterministic `fallback` string the caller built from the
+salience payload. The pipeline never breaks because of LLM availability.
+Output is cached at `out/llm_cache/summary.json` keyed by SHA256 of (model,
+system prompt, payload), so re-runs on unchanged data make zero API calls
+and produce byte-identical output. Cache dir is gitignored.
+
+**The merger only scaffolds new auto-blocks into a fresh file.** If
+`context.unit.<id>.md` already exists with auto-blocks, `_replace_blocks`
+will only update bodies of blocks that already appear in the file — newly
+registered blocks (e.g. a freshly added `dunning.summary`) won't be inserted.
+After adding a block, delete the affected `context.unit.*.md` /
+`context.property.*.md` files and re-run to pick up the new structure.
+
 ## Adding a new source connector
 
 1. Create `extractor/sources/<name>.py` with `def extract(root: Path, *, include_incremental: bool = False) -> Iterator[tuple[Event, list[Fact]]]:`.
@@ -181,6 +209,28 @@ For PDFs, the body text is already cached. Add a regex at the top of
 `extractor/sources/pdfs.py` and an `add()` call inside `_invoice_event` or
 `_letter_event`. **Use the totals block helper** (`_extract_totals`) instead of
 matching individual labels — see the column-layout note above.
+
+## Adding a new summary block
+
+Pattern lives in `extractor/blocks.py` — see `_dunning_signal()` +
+`render_dunning_summary()` as the reference implementation.
+
+1. Write a `_<section>_signal(store, ...)` helper that pulls *only* the salient
+   facts (anomalies, conflicts, items with deadlines) into a small JSON dict.
+   This is the noise filter — confidence floor, key allowlist, recency window
+   live here, NOT in the prompt.
+2. Build a `references: list[{label, url}]` list from the same facts'
+   `source_ref` so the LLM has citation material.
+3. Write `render_<section>_summary(store, ctx)` that:
+   - returns `"_no issue_"` immediately if the signal is empty,
+   - constructs a deterministic `fallback` string (used when LLM unavailable),
+   - calls `(ctx.get("summarizer") or get_summarizer()).summarize(...)`.
+4. Register in `PROPERTY_BLOCKS` or `UNIT_BLOCKS` with the auto-block name
+   (use a dotted name like `<section>.summary`).
+5. Add `<!-- auto:<name> -->_no issue_<!-- /auto:<name> -->` to the matching
+   template (`context.property.template.md` / `context.unit.template.md`).
+6. Delete affected rendered files (see merger gotcha) and re-run
+   `python run.py raw/ --today YYYY-MM-DD` so `today` reaches the LLM.
 
 ## Adding tests
 
@@ -218,3 +268,11 @@ The `format_value` helper is already wired so the Merger only needs to decide
 - Don't run conflict detection on time-series keys (`payment.*`,
   `communication.*`, etc.). Use `format_value` only for scalar identity/
   contract keys — see the SCALAR_KEYS set in `run.py` for the allowlist.
+- Don't ask the Summarizer to filter noise. Filter deterministically in the
+  `_<section>_signal()` helper before the LLM sees the payload — Claude is bad
+  at "ignore the boring stuff" and good at "summarize this list".
+- Don't strip URLs from summary output. The audit trail is load-bearing per
+  the Signal-First philosophy; the system prompt requires the LLM to preserve
+  `[(label)](url)` citations in the rendered summary.
+- Don't put the LLM cache anywhere except `out/llm_cache/`. The path is
+  gitignored; relocating it risks committing cached responses.

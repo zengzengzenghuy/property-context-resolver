@@ -5,11 +5,13 @@
 > **Property-wide data lives in `context.property.md`** — see `parent_property_ref` below.
 
 <!-- auto:meta -->
-- last_built_at: `2026-04-25T20:04:22+00:00`
+- last_built_at: `2026-04-25T20:52:26+00:00`
 - build_hash: `engine-v2`
 - engine_version: `0.2.0`
 - schema_version: `spine-v2-split` (2026-04-25)
 - file_role: `unit`
+- unit_id: `EH-008`
+- property_id: `LIE-001`
 - parent_property_ref: `context.property.LIE-001.md`
 - owner_ref: `EIG-033`
 <!-- /auto:meta -->
@@ -65,7 +67,11 @@ _(no data in source yet)_
 - live source: `db.tickets WHERE unit_id=EH-008 AND status='open'`
 <!-- /auto:tickets.aggregate -->
 
-### 3.3 Active Mahnverfahren (per claim)
+### 3.3 Active Mahnverfahren
+
+<!-- auto:dunning.summary -->_no issue_<!-- /auto:dunning.summary -->
+
+#### Per claim
 <!-- auto:dunning -->
 | tenant_ref | claim_id | current_stage | amount_open | default_since | deadline_for_stage | last_letter |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -127,7 +133,7 @@ _(no data in source yet)_
 | `20250715_004800_EMAIL-05040-eml` | email | [emails/2025-07/20250715_004800_EMAIL-05040.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-07/20250715_004800_EMAIL-05040.eml) | 2025-07-15T00:48:00+00:00 |
 | `20250811_154900_EMAIL-05258-eml` | email | [emails/2025-08/20250811_154900_EMAIL-05258.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-08/20250811_154900_EMAIL-05258.eml) | 2025-08-11 |
 | `20251125_131200_EMAIL-06221-eml` | email | [emails/2025-11/20251125_131200_EMAIL-06221.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-11/20251125_131200_EMAIL-06221.eml) | 2025-11-25 |
-| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-25T20:04:11+00:00 |
+| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-25T20:52:09+00:00 |
 <!-- /auto:provenance -->
 
 ---

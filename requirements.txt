@@ -3,4 +3,5 @@ pytesseract>=0.3.10       # optional — OCR fallback for scanned PDFs (needs sy
 pdf2image>=1.17           # optional — only needed alongside pytesseract
 pypdf>=4.0                # optional — backup PDF text extractor
 supabase>=2.0             # mirrors the rendered context.md to the shared data layer
-python-dotenv>=1.0        # loads SUPABASE_URL / SERVICE_KEY from .env
+python-dotenv>=1.0        # loads SUPABASE_* and ANTHROPIC_API_KEY from .env
+anthropic>=0.96           # LLM summarizer for the Signal-First context.md auto-blocks

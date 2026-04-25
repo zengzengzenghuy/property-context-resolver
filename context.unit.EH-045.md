@@ -5,11 +5,13 @@
 > **Property-wide data lives in `context.property.md`** — see `parent_property_ref` below.
 
 <!-- auto:meta -->
-- last_built_at: `2026-04-25T20:04:23+00:00`
+- last_built_at: `2026-04-25T20:53:09+00:00`
 - build_hash: `engine-v2`
 - engine_version: `0.2.0`
 - schema_version: `spine-v2-split` (2026-04-25)
 - file_role: `unit`
+- unit_id: `EH-045`
+- property_id: `LIE-001`
 - parent_property_ref: `context.property.LIE-001.md`
 - owner_ref: `EIG-020`
 <!-- /auto:meta -->
@@ -90,7 +92,11 @@
 - live source: `db.tickets WHERE unit_id=EH-045 AND status='open'`
 <!-- /auto:tickets.aggregate -->
 
-### 3.3 Active Mahnverfahren (per claim)
+### 3.3 Active Mahnverfahren
+
+<!-- auto:dunning.summary -->[Routine] Mieter MIE-006 ist seit vier Monaten im Verzug; offener Betrag 5.024,00 EUR zzgl. 64,35 EUR Verzugszinsen, letzte Zahlung 2025-12-03 [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-01578). Vertraglich geschuldet sind monatlich 1.256,00 EUR (Kaltmiete 1.076,00 EUR + NK 273,00 EUR); Mahnstufe 1 seit 2025-07-17 [(letter)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2025-07/20250717_mahnung_LTR-0132.pdf). Verzug nach § 286 BGB, Verzugszinsen § 288 I BGB (Basiszins + 5pp); nächster Schritt: 2. Mahnung nach Verzugsfrist.<!-- /auto:dunning.summary -->
+
+#### Per claim
 <!-- auto:dunning -->
 | tenant_ref | claim_id | current_stage | amount_open | default_since | deadline_for_stage | last_letter |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -266,7 +272,7 @@ _(no data in source yet)_
 | `20251216_155800_EMAIL-06415-eml` | email | [emails/2025-12/20251216_155800_EMAIL-06415.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251216_155800_EMAIL-06415.eml) | 2025-12-16T15:58:00+00:00 |
 | `20251229_115600_EMAIL-06516-eml` | email | [emails/2025-12/20251229_115600_EMAIL-06516.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251229_115600_EMAIL-06516.eml) | 2025-12-29T11:56:00+00:00 |
 | `20251230_105600_EMAIL-06527-eml` | email | [emails/2025-12/20251230_105600_EMAIL-06527.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251230_105600_EMAIL-06527.eml) | 2025-12-30T10:56:00+00:00 |
-| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-25T20:04:11+00:00 |
+| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-25T20:52:09+00:00 |
 <!-- /auto:provenance -->
 
 ---

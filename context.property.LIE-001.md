@@ -1,10 +1,13 @@
-# context.property.md — WEG Immanuelkirchstraße 26
+# context.property.md — <!-- auto:property.display_name -->WEG Immanuelkirchstraße 26<!-- /auto:property.display_name -->
 
-> Property dossier for LIE-001. Hand-populated demo from `zengzengzenghuy/property-context-resolver` raw data, 2026-04-25.
-> Per-unit detail in `context.unit.<EH-XX>.md` (demo unit: EH-019).
+> Property-level dossier (one file per Liegenschaft). Holds everything that is property-wide:
+> owners, mandate, WEG decisions, vendors, utilities, authorities, compliance, financials, policies.
+> **Per-unit data lives in `context.unit.<unit_id>.md` files** — see §2 Units Index for refs.
+> Volatile data (live balances) is NOT stored here — pointers indicate live source.
+> Manual edits outside `<!-- auto:* -->` blocks are preserved by the engine.
 
 <!-- auto:meta -->
-- last_built_at: `2026-04-25T20:04:21+00:00`
+- last_built_at: `2026-04-25T20:52:19+00:00`
 - build_hash: `engine-v2`
 - engine_version: `0.2.0`
 - schema_version: `spine-v2-split` (2026-04-25)
@@ -68,6 +71,7 @@
 | `EIG-034` | Harro Bloch | 139 | EH-004 | harro.bloch@gmail.com | — | none | — |
 | `EIG-035` | Markus Fliegner | 118 | EH-006 | markus.fliegner@gmx.de | — | none | — |
 <!-- /auto:owners -->
+*`sale_intent`: `none | considering | listed | under_contract`; if ≠ none → `{ since, requested_docs[] }` in footnote.*
 
 ### 1.2 Verwaltermandat
 <!-- auto:mandate -->
@@ -83,6 +87,8 @@
 ---
 
 ## 2. Units Index
+> Roster only. Detail lives in per-unit files.
+
 <!-- auto:units-index -->
 | unit_id | label | haus_id | floor | sqm | rooms | typ | mea_‰ | occupancy | owner_ref | unit_md_ref |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -140,11 +146,9 @@
 | `EH-052` | TG 52 | HAUS-16 | Tiefgarage | 12.5 | — | Tiefgarage | 23 | vacant | `EIG-010` | `context.unit.EH-052.md` |
 <!-- /auto:units-index -->
 
-*Demo-MD enthält nur EH-019 vollständig. Engine wird alle 52 Index-Rows aus stammdaten populieren.*
-
 ---
 
-## 3. Compliance Calendar
+## 3. Compliance Calendar (property-wide)
 <!-- auto:compliance -->
 | obligation | last_done | next_due | vendor_ref | status | evidence_doc_ref |
 | --- | --- | --- | --- | --- | --- |
@@ -153,7 +157,7 @@ _(no data in source yet)_
 
 ---
 
-## 4. Vendor Operations
+## 4. Vendor Operations (property-wide)
 
 ### 4.1 Open Vendor Quotes
 <!-- auto:vendor-quotes -->
@@ -162,14 +166,14 @@ _(no data in source yet)_
 _(no data in source yet)_
 <!-- /auto:vendor-quotes -->
 
-### 4.2 Vendor Dunning AGAINST US
+### 4.2 Vendor Dunning AGAINST US (Mahnungen, die wir bekommen)
 <!-- auto:vendor-dunning -->
 | vendor_ref | invoice_no | amount | stage | since | deadline | reason |
 | --- | --- | --- | --- | --- | --- | --- |
 _(no data in source yet)_
 <!-- /auto:vendor-dunning -->
 
-### 4.3 Recurring Property Processes
+### 4.3 Recurring Property Processes (in-flight, property-wide)
 <!-- auto:recurring-property -->
 | process_type | started | current_step | owner | eta | blockers |
 | --- | --- | --- | --- | --- | --- |
@@ -214,6 +218,9 @@ _(no data in source yet)_
 <!-- /auto:financials -->
 
 ### 5.1 Operations Summary (aggregated from all units)
+> Materialized snapshot — built by Property Aggregator from all `context.unit.*.md` files.
+> Deterministic counters; updated on Unit-Events or nightly batch. See `engine.aggregation-rules.md`.
+
 <!-- auto:operations-summary -->
 - units_status: { rented: `25`, vacant: `3`, own-use: `24`, total: `52` }
 - active_dunning: { count: `25`, by_stage: { 1: `24`, 2: `1`, 3: `0` }, units: ['EH-002', 'EH-003', 'EH-006', 'EH-010', 'EH-013', 'EH-016', 'EH-019', 'EH-021', 'EH-022', 'EH-023', 'EH-025', 'EH-029', 'EH-031', 'EH-032', 'EH-034', 'EH-035', 'EH-037', 'EH-039', 'EH-041', 'EH-042', 'EH-045', 'EH-046', 'EH-049', 'EH-050', 'EH-051'] }
@@ -222,7 +229,7 @@ _(no data in source yet)_
 - active_mieterwechsel_in_flight: { count: `26`, units: ['EH-002', 'EH-003', 'EH-006', 'EH-009', 'EH-013', 'EH-016', 'EH-019', 'EH-021', 'EH-022', 'EH-025', 'EH-028', 'EH-029', 'EH-031', 'EH-032', 'EH-034', 'EH-035', 'EH-036', 'EH-037', 'EH-039', 'EH-041', 'EH-042', 'EH-045', 'EH-046', 'EH-049', 'EH-050', 'EH-051'] }
 - critical_tickets_total: `263`
 - vendor_open_balance_against_us_total: `0.00 EUR`
-- last_aggregated_at: `2026-04-25T20:04:21+00:00`
+- last_aggregated_at: `2026-04-25T20:52:19+00:00`
 <!-- /auto:operations-summary -->
 
 ---
@@ -251,7 +258,7 @@ _(no data in source yet)_
 | Fassadenreinigung | TechClean International | lisa.brown@techclean-international.com | stundensatz €55.0 | — | 2025-10-20 INV-00171 | — | `DL-016` |
 <!-- /auto:stakeholders -->
 
-### 6.2 Versorger
+### 6.2 Versorger (Strom, Gas, Wasser, Müll)
 <!-- auto:utilities -->
 | type | provider | vertrag_no | meter_ref(s) | current_abschlag (€/Mon) | last_jahresabrechnung_period | next_jahresabrechnung_due | id |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -267,7 +274,7 @@ _(no data in source yet)_
 
 ---
 
-## 7. Policies
+## 7. Policies (defaults & rules)
 <!-- auto:policies -->
 - mahngebuehren: { stage_1: €5, stage_2: €10 }
 - verzugszinssatz: basiszinssatz + 5pp (§ 288 I BGB)
@@ -279,7 +286,7 @@ _(no data in source yet)_
 
 ---
 
-## 8. Decisions & History
+## 8. Decisions & History (property-wide)
 
 ### 8.1 WEG-Beschlüsse — Decided
 <!-- auto:weg-decisions -->
@@ -288,21 +295,31 @@ _(no data in source yet)_
 _(no data in source yet)_
 <!-- /auto:weg-decisions -->
 
-### 8.2 Agenda Backlog
+### 8.2 WEG-Agenda Backlog (proposed for next ETV)
 <!-- auto:weg-agenda-backlog -->
 | proposed_at | proposed_by (owner_id) | topic | status | doc_ref |
 | --- | --- | --- | --- | --- |
 _(no data in source yet)_
 <!-- /auto:weg-agenda-backlog -->
 
-### 8.3 Einspruch-Log
+### 8.3 Einspruch-Log (per Beschluss)
 <!-- auto:weg-einsprueche -->
 | beschluss-no | einspruch_by (owner_id) | date | reason (one-line) | status |
 | --- | --- | --- | --- | --- |
 _(no data in source yet)_
 <!-- /auto:weg-einsprueche -->
 
-### 8.5 Cross-Unit Patterns
+### 8.4 Modernisierungs-Maßnahmen (property-wide)
+<!-- auto:modernization -->
+| date_completed | scope | total_cost | umlage_per_year | affected_units | rent_increase | opt-outs |
+| --- | --- | --- | --- | --- | --- | --- |
+_(no data in source yet)_
+<!-- /auto:modernization -->
+
+### 8.5 Cross-Unit Patterns (auto-detected via aggregation)
+> Patterns spanning multiple units, surfaced by the Property Aggregator. LLM-detected.
+> Trigger: nightly batch + on-demand when N+1 same-type events accumulate (default: 3 in 90d).
+
 <!-- auto:cross-unit-patterns -->
 | pattern_type | involved_units | incident_count | first_seen | last_seen | trigger_action_suggested | confidence |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -310,6 +327,9 @@ _(no data in source yet)_
 
 _(LLM pattern detection — Hour 6+, see `engine.aggregation-rules.md` §8.5.)_
 <!-- /auto:cross-unit-patterns -->
+
+*`pattern_type`: `Konflikt | Wartung | Vendor-Quality | Owner-Behaviour | Insurance-Trigger`*
+*`trigger_action_suggested`: e.g. `Versicherungsschaden eröffnen`, `Vendor wechseln`, `WEG-Beschluss vorbereiten`, `Beirat einbinden`*
 
 ---
 
@@ -381,12 +401,11 @@ _(LLM pattern detection — Hour 6+, see `engine.aggregation-rules.md` §8.5.)_
 | `letter-briefe-2025-10` | letter | [briefe/2025-10](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2025-10/20251019_mahnung_LTR-0133.pdf) | 2025-10-19 |
 | `letter-briefe-2025-11` | letter | [briefe/2025-11](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2025-11/20251105_kuendigung_LTR-0134.pdf) | 2025-11-05 |
 | `letter-briefe-2025-12` | letter | [briefe/2025-12](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2025-12/20251208_mahnung_LTR-0135.pdf) | 2026-04-25 |
-| `stammdaten-stammdaten` | stammdaten | [stammdaten](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-25T20:04:11+00:00 |
+| `stammdaten-stammdaten` | stammdaten | [stammdaten](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-25T20:52:09+00:00 |
 <!-- /auto:provenance -->
 
 ---
 
-[^sd]: stammdaten/stammdaten.json → liegenschaft
-[^eh]: stammdaten/einheiten.csv (52 rows)
+[^addr]: stammdaten/stammdaten.json → liegenschaft
 
-*Schema: spine-v2-split (2026-04-25). Companion: `context.unit.EH-019.md`. Aggregations-Spec: `engine.aggregation-rules.md`.*
+*Schema: spine-v2-split (2026-04-25). Field-language English; German legal terms preserved (Kaltmiete, Mahnstufe, Werktage, Wohnungsgeberbestätigung, …). Companion: `context.unit.<unit_id>.md` per unit.*
