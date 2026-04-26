@@ -38,8 +38,14 @@ try:
 except ImportError:  # pragma: no cover - optional dep
     Anthropic = None  # type: ignore[assignment]
 
+try:
+    import google.generativeai as genai
+except ImportError:  # pragma: no cover - optional dep
+    genai = None  # type: ignore[assignment]
 
-DEFAULT_MODEL = "claude-haiku-4-5-20251001"
+
+DEFAULT_ANTHROPIC_MODEL = "claude-haiku-4-5-20251001"
+DEFAULT_GEMINI_MODEL = "gemini-1.5-flash-latest"
 DEFAULT_MAX_TOKENS = 400
 DEFAULT_CACHE_PATH = Path("out/llm_cache/summary.json")
 
@@ -122,10 +128,11 @@ Respond with JUST the markdown body. No headers, no code fences, no preamble.
 
 @dataclass
 class Summarizer:
-    """Anthropic client wrapper. No-op when API key is unset."""
+    """LLM client wrapper (Anthropic or Gemini). No-op when API keys are unset."""
 
+    provider: Optional[str] = None  # "anthropic" | "gemini"
     client: Optional[Any] = None
-    model: str = DEFAULT_MODEL
+    model: str = ""
     max_tokens: int = DEFAULT_MAX_TOKENS
     cache_path: Path = field(default_factory=lambda: DEFAULT_CACHE_PATH)
     _cache: dict[str, str] = field(default_factory=dict)
@@ -133,12 +140,27 @@ class Summarizer:
 
     @classmethod
     def from_env(cls, cache_path: Optional[Path] = None) -> "Summarizer":
-        if Anthropic is None or not os.environ.get("ANTHROPIC_API_KEY"):
-            return cls(cache_path=cache_path or DEFAULT_CACHE_PATH)
-        return cls(
-            client=Anthropic(),
-            cache_path=cache_path or DEFAULT_CACHE_PATH,
-        )
+        anthropic_key = os.environ.get("ANTHROPIC_API_KEY")
+        gemini_key = os.environ.get("GEMINI_API_KEY")
+
+        if genai and gemini_key:
+            genai.configure(api_key=gemini_key)
+            return cls(
+                provider="gemini",
+                client=genai,
+                model=os.environ.get("GEMINI_MODEL", DEFAULT_GEMINI_MODEL),
+                cache_path=cache_path or DEFAULT_CACHE_PATH,
+            )
+
+        if Anthropic and anthropic_key:
+            return cls(
+                provider="anthropic",
+                client=Anthropic(api_key=anthropic_key),
+                model=os.environ.get("ANTHROPIC_MODEL", DEFAULT_ANTHROPIC_MODEL),
+                cache_path=cache_path or DEFAULT_CACHE_PATH,
+            )
+
+        return cls(cache_path=cache_path or DEFAULT_CACHE_PATH)
 
     @property
     def enabled(self) -> bool:
@@ -175,20 +197,34 @@ class Summarizer:
             return cached
 
         try:
-            resp = self.client.messages.create(
-                model=self.model,
-                max_tokens=self.max_tokens,
-                system=[{
-                    "type": "text",
-                    "text": SYSTEM_PROMPT,
-                    "cache_control": {"type": "ephemeral"},
-                }],
-                messages=[{
-                    "role": "user",
-                    "content": json.dumps(payload, ensure_ascii=False, sort_keys=True),
-                }],
-            )
-            text = resp.content[0].text.strip() if resp.content else ""
+            if self.provider == "anthropic":
+                resp = self.client.messages.create(
+                    model=self.model,
+                    max_tokens=self.max_tokens,
+                    system=[{
+                        "type": "text",
+                        "text": SYSTEM_PROMPT,
+                        "cache_control": {"type": "ephemeral"},
+                    }],
+                    messages=[{
+                        "role": "user",
+                        "content": json.dumps(payload, ensure_ascii=False, sort_keys=True),
+                    }],
+                )
+                text = resp.content[0].text.strip() if resp.content else ""
+            elif self.provider == "gemini":
+                model = self.client.GenerativeModel(
+                    model_name=self.model,
+                    system_instruction=SYSTEM_PROMPT,
+                )
+                resp = model.generate_content(
+                    json.dumps(payload, ensure_ascii=False, sort_keys=True),
+                    generation_config={"max_output_tokens": self.max_tokens},
+                )
+                text = resp.text.strip()
+            else:
+                return fallback
+
             out = text or fallback
         except Exception:
             return fallback
