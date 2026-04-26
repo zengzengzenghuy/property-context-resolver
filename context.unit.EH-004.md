@@ -5,7 +5,7 @@
 > **Property-wide data lives in `context.property.md`** — see `parent_property_ref` below.
 
 <!-- auto:meta -->
-- last_built_at: `2026-04-26T09:27:20+00:00`
+- last_built_at: `2026-04-26T09:51:53+00:00`
 - build_hash: `engine-v2`
 - engine_version: `0.2.0`
 - schema_version: `spine-v2-split` (2026-04-25)
@@ -19,7 +19,7 @@
 ---
 
 ## 1. Unit
-<!-- auto:unit.summary -->[Administrative] Einheit EH-004 (WE 04, 2-Zimmer-Wohnung, 60 qm, 2. OG links) ist Eigentumswohnung mit Miteigentumsanteil 139/1000 [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#einheit/EH-004). Hausgeldzahlung 9,85 EUR von Harro Bloch am 2025-12-02 registriert [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-00060); Kündigungskommunikation datiert 2025-03-17. Verkaufsnotiz für WE 04 vom 2024-10-23 dokumentiert.<!-- /auto:unit.summary -->
+<!-- auto:unit.summary -->[Administrative] Einheit EH-004 (WE 04, 2. OG links, 60 qm, 2 Zimmer) in HAUS-12 mit Miteigentumsanteil 139/10000 [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#einheit/EH-004). Jüngste Haugeldzahlung 9,85 EUR am 2025-12-02 von Harro Bloch für Periode 12/2025 [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-00060) deutet auf Eigentümerwechsel hin; parallel Kündigungskommunikation 2025-03-17 erfasst — Mietvertragsstatus und Übergangspflichten nach § 566 BGB (Wechsel des Vermieters) klären erforderlich.<!-- /auto:unit.summary -->
 
 <!-- auto:unit -->
 - unit_id: `EH-004`
@@ -147,7 +147,7 @@ _(no data in source yet)_
 ---
 
 ## 5. Provenance & Source Index (this unit/tenant)
-<!-- auto:provenance.summary -->_no issue_<!-- /auto:provenance.summary -->
+<!-- auto:provenance.summary -->[Administrative] Einheit EH-004 (WE 04, 2. OG links, 60 qm, 2 Zimmer) in HAUS-12 mit Miteigentumsanteil 139/10000 [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#einheit/EH-004). Verkaufsabsicht gemeldet 2024-10-22, Thread aktiv bis 2025-06-16; Kündigungskommunikation dokumentiert 2025-03-17. Hausgeldeingang 2025-12-02 (9,85 EUR für 12/2025) [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-00060) — Maklergebühren oder Verkaufsstand erforderlich.<!-- /auto:provenance.summary -->
 
 <!-- auto:provenance -->
 | source-id | type | path | last_seen |
@@ -157,7 +157,7 @@ _(no data in source yet)_
 | `20241023_121200_EMAIL-02698-eml` | email | [emails/2024-10/20241023_121200_EMAIL-02698.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-10/20241023_121200_EMAIL-02698.eml) | 2024-10-23T12:12:00+00:00 |
 | `20250317_140000_EMAIL-04043-eml` | email | [emails/2025-03/20250317_140000_EMAIL-04043.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-03/20250317_140000_EMAIL-04043.eml) | 2025-03-17T14:00:00+00:00 |
 | `20250616_112800_EMAIL-04791-eml` | email | [emails/2025-06/20250616_112800_EMAIL-04791.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-06/20250616_112800_EMAIL-04791.eml) | 2025-06-16 |
-| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-26T09:26:19+00:00 |
+| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-26T09:51:02+00:00 |
 <!-- /auto:provenance -->
 
 ---

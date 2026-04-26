@@ -7,7 +7,7 @@
 > Manual edits outside `<!-- auto:* -->` blocks are preserved by the engine.
 
 <!-- auto:meta -->
-- last_built_at: `2026-04-26T09:26:29+00:00`
+- last_built_at: `2026-04-26T09:54:22+00:00`
 - build_hash: `engine-v2`
 - engine_version: `0.2.0`
 - schema_version: `spine-v2-split` (2026-04-25)
@@ -247,7 +247,7 @@ _(no data in source yet)_
 - active_mieterwechsel_in_flight: { count: `26`, units: ['EH-002', 'EH-003', 'EH-006', 'EH-009', 'EH-013', 'EH-016', 'EH-019', 'EH-021', 'EH-022', 'EH-025', 'EH-028', 'EH-029', 'EH-031', 'EH-032', 'EH-034', 'EH-035', 'EH-036', 'EH-037', 'EH-039', 'EH-041', 'EH-042', 'EH-045', 'EH-046', 'EH-049', 'EH-050', 'EH-051'] }
 - critical_tickets_total: `263`
 - vendor_open_balance_against_us_total: `0.00 EUR`
-- last_aggregated_at: `2026-04-26T09:26:33+00:00`
+- last_aggregated_at: `2026-04-26T09:54:28+00:00`
 <!-- /auto:operations-summary -->
 
 ---
@@ -255,7 +255,7 @@ _(no data in source yet)_
 ## 6. Stakeholders
 
 ### 6.1 Service-Vendors & Versicherungen
-<!-- auto:stakeholders.summary -->[Administrative] Acht Dienstleister in Stammdaten erfasst [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#dienstleister/DL-001): DL-001 Hausmeister Mueller (650,00 EUR/Mo.), DL-002 Aufzug Schindler (185,00 EUR/Mo.), DL-003 Heiztechnik Berlin (0,00 EUR/Mo., Stundensatz 78,00 EUR), DL-004 Reinigungsservice Kowalski sowie fünf weitere. Alle Kontaktdaten, Bankverbindungen, USt-IDs und Steuernummern vollständig dokumentiert. Keine Abweichung zwischen Vertragssätzen und Stammdaten erkannt.<!-- /auto:stakeholders.summary -->
+<!-- auto:stakeholders.summary -->_no issue_<!-- /auto:stakeholders.summary -->
 
 <!-- auto:stakeholders -->
 | role | name | contact | vertragstyp | next_service_due | last_invoice (date/amount) | open_balance_against_us | id |
@@ -439,7 +439,7 @@ _(LLM pattern detection — Hour 6+, see `engine.aggregation-rules.md` §8.5.)_
 | `letter-briefe-2025-10` | letter | [briefe/2025-10](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2025-10/20251019_mahnung_LTR-0133.pdf) | 2025-10-19 |
 | `letter-briefe-2025-11` | letter | [briefe/2025-11](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2025-11/20251105_kuendigung_LTR-0134.pdf) | 2025-11-05 |
 | `letter-briefe-2025-12` | letter | [briefe/2025-12](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2025-12/20251208_mahnung_LTR-0135.pdf) | 2026-04-26 |
-| `stammdaten-stammdaten` | stammdaten | [stammdaten](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-26T09:26:19+00:00 |
+| `stammdaten-stammdaten` | stammdaten | [stammdaten](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-26T09:54:05+00:00 |
 <!-- /auto:provenance -->
 
 ---

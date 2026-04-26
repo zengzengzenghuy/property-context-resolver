@@ -5,7 +5,7 @@
 > **Property-wide data lives in `context.property.md`** — see `parent_property_ref` below.
 
 <!-- auto:meta -->
-- last_built_at: `2026-04-26T09:26:43+00:00`
+- last_built_at: `2026-04-26T09:51:22+00:00`
 - build_hash: `engine-v2`
 - engine_version: `0.2.0`
 - schema_version: `spine-v2-split` (2026-04-25)
@@ -19,7 +19,7 @@
 ---
 
 ## 1. Unit
-<!-- auto:unit.summary -->[Routine] Einheit EH-002 (WE 02, 1,5-Zimmer-Wohnung, 49 qm, 1. OG mitte) hat am 2025-12-06 ein defektes Fenster gemeldet [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#einheit/EH-002). Hausgeld wurde zuletzt am 2025-12-04 mit 9,70 EUR eingezahlt [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-00014). Reparaturpflicht für Fenster liegt beim Vermieter nach § 535 Abs. 1 BGB (Erhaltungspflicht); Ticket ist seit 2025-12-06 offen und benötigt Abschluss oder Statusupdate.<!-- /auto:unit.summary -->
+<!-- auto:unit.summary -->[Routine] Einheit EH-002 (WE 02, 1,5-Zimmer, 49 qm, 1. OG mitte) in HAUS-12 mit Miteigentumsanteil 114/10.000; Mieter zahlt Hausgeld regelmäßig [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#einheit/EH-002), zuletzt 9,70 EUR am 2025-12-04 [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-00014). Offene Kommunikation: Mieter meldete defektes Fenster am 2025-12-06, Verwalter (Sabine Huber) bestätigte Ticket-Eingang — Reparaturobliegenheit und Kostenverteilung nach Mietvertrag und § 535 BGB zu prüfen.<!-- /auto:unit.summary -->
 
 <!-- auto:unit -->
 - unit_id: `EH-002`
@@ -42,7 +42,7 @@
 ---
 
 ## 2. Lease (Mietverhältnis, voll)
-<!-- auto:lease.summary -->[Routine] Mieter MIE-009 (Marliese Hermann, EH-002) hat Mietvertrag zum nächstmöglichen Termin gekündigt; Kündigungsmitteilung vorgelegen am [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-08/20250820_141700_EMAIL-05358.eml) 2025-08-20. Vertrag läuft seit 2021-01-21 mit Kaltmiete 724,00 EUR + NK 140,00 EUR; Kaution 2.172,00 EUR hinterlegt. Kündigungsfrist § 573 Abs. 1 BGB (4 Wochen zum 15. oder Ende eines Kalendermonats): wirksame Beendigung frühestens 2025-09-30; Kündigungsbestätigung und Endreinigung sowie NK-Abrechnung ausstehend.<!-- /auto:lease.summary -->
+<!-- auto:lease.summary -->[Routine] Mieter MIE-009 (Einheit EH-002) hat Mietvertrag fristgerecht zum nächstmöglichen Termin gekündigt [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-08/20250820_141700_EMAIL-05358.eml); Kündigungsdatum 2025-08-20, Mietbeginn 2021-01-21, aktuelle Kaltmiete 724,00 EUR + NK 140,00 EUR, Kaution 2.172,00 EUR [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#mieter/MIE-009). Nach § 573 I BGB ist die Kündigungsfrist für Wohnraum vier Wochen zum Fünfzehnten oder zum Ende eines Kalendermonats; Kündigungstermin somit frühestens 2025-09-30 (vier Wochen ab 2025-08-20, zum Ende eines Monats). Zudem war eine Untervermietungsanfrage vom 2025-07-02 gestellt worden [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-07/20250702_091200_EMAIL-04928.eml) — diese ist durch die Kündigung gegenstandslos; Kaution und Nebenkostenabrechnung müssen vor<!-- /auto:lease.summary -->
 
 <!-- auto:lease -->
 - lease_id: `LEASE-MIE-009`
@@ -180,7 +180,7 @@ _(no data in source yet)_
 ---
 
 ## 5. Provenance & Source Index (this unit/tenant)
-<!-- auto:provenance.summary -->_no issue_<!-- /auto:provenance.summary -->
+<!-- auto:provenance.summary -->[Routine] Mieter MIE-009 ist seit vier Monaten im Verzug; offener Betrag 3.456,00 EUR zzgl. 45,07 EUR Verzugszinsen, letzte Zahlung 2025-12-03 [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-00014). Vertraglich geschuldet sind monatlich 864,00 EUR (Kaltmiete 724,00 EUR + NK 140,00 EUR); Verzug nach § 286 BGB, Verzugszinsen § 288 I BGB (Basiszins 3,5 % + 5 pp). Mahnstufe 1 aktiv (Stand 2026-04-26), nächster Schritt: 2. Mahnung nach 14 Tagen. Parallel: offener Ticket "Defektes Fenster" seit 2025-12-05 und aktiver Thread "Verstopfter Abfluss" seit 2024-01-09 (117 Nachrichten, zuletzt 2025-12-30) [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#mieter/MIE-009) — beide Mängel müssen vor Mahnverfahren geprüft und dokumentiert werden (§ 536 BGB Mängelrüge, § 280 BGB<!-- /auto:provenance.summary -->
 
 <!-- auto:provenance -->
 | source-id | type | path | last_seen |
@@ -267,7 +267,7 @@ _(no data in source yet)_
 | `20251206_200500_EMAIL-06316-eml` | email | [emails/2025-12/20251206_200500_EMAIL-06316.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251206_200500_EMAIL-06316.eml) | 2025-12-06T20:05:00+00:00 |
 | `20251216_155800_EMAIL-06415-eml` | email | [emails/2025-12/20251216_155800_EMAIL-06415.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251216_155800_EMAIL-06415.eml) | 2025-12-16 |
 | `20251230_144800_EMAIL-06532-eml` | email | [emails/2025-12/20251230_144800_EMAIL-06532.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251230_144800_EMAIL-06532.eml) | 2025-12-30 |
-| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-26T09:26:19+00:00 |
+| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-26T09:51:02+00:00 |
 <!-- /auto:provenance -->
 
 ---

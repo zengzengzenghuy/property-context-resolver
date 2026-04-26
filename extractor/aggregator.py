@@ -161,6 +161,15 @@ class PropertyAggregator:
                     pass
         emitted += self._emit("operations.vendor_open_balance_eur", round(open_eur, 2))
 
+        # 8. Tavily Integration: Context Obsolescence Guard
+        from .tavily import get_oracle
+        oracle = get_oracle()
+        if oracle.enabled and today_d is not None:
+            # Check if there is a newer Mietspiegel for Berlin than the previous year.
+            # In a real app we'd parse the city and last known year from facts.
+            if oracle.check_mietspiegel("Berlin", today_d.year - 1):
+                emitted += self._emit("operations.context_outdated", "Neuer Mietspiegel Berlin verfügbar")
+
         return emitted
 
     # --- helpers ---

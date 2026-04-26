@@ -5,7 +5,7 @@
 > **Property-wide data lives in `context.property.md`** — see `parent_property_ref` below.
 
 <!-- auto:meta -->
-- last_built_at: `2026-04-26T09:27:24+00:00`
+- last_built_at: `2026-04-26T09:52:01+00:00`
 - build_hash: `engine-v2`
 - engine_version: `0.2.0`
 - schema_version: `spine-v2-split` (2026-04-25)
@@ -147,13 +147,13 @@ _(no data in source yet)_
 ---
 
 ## 5. Provenance & Source Index (this unit/tenant)
-<!-- auto:provenance.summary -->_no issue_<!-- /auto:provenance.summary -->
+<!-- auto:provenance.summary -->[Administrative] Einheit EH-005 (WE 05, 2. OG mitte, 110 m², 4 Zimmer, Miteigentumsanteil 255/10000, HAUS-12) verzeichnet Zahlungseingang 35,63 EUR am 2025-12-02 von Kunigunda Ditschlerin [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#einheit/EH-005) mit Verwendungszweck „Hausgeld 12/2025 EH-005,EH-036" [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-00041). Zahlungsquittung und Kontenzuordnung (Mehreinheit-Buchung) müssen gegen Mietvertrag und Hausgeldabrechnung validiert werden, um zu prüfen, ob Zahlungsanteil korrekt verteilt ist.<!-- /auto:provenance.summary -->
 
 <!-- auto:provenance -->
 | source-id | type | path | last_seen |
 | --- | --- | --- | --- |
 | `kontoauszug_2024_2025-csv` | bank | [bank/kontoauszug_2024_2025.csv](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv) | 2025-12-02 |
-| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-26T09:26:19+00:00 |
+| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-26T09:51:02+00:00 |
 <!-- /auto:provenance -->
 
 ---

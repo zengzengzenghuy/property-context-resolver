@@ -208,6 +208,7 @@ at the top — copy that pattern when adding new cases.
 |-------------------------------|------------------------|----------------------------------------------|
 | `GEMINI_API_KEY`              | `extractor/summarizer.py` | enables Gemini summaries; if missing, falls back to `ANTHROPIC_API_KEY`. |
 | `ANTHROPIC_API_KEY`           | `extractor/summarizer.py` | enables Claude summaries; used if `GEMINI_API_KEY` is missing. |
+| `TAVILY_API_KEY`              | `extractor/tavily.py`    | enables live legal/temporal fact-checking; if missing, falls back to hardcoded defaults. |
 | `SUPABASE_URL` + `SUPABASE_SERVICE_KEY` | `extractor/sb.py` | Supabase mirror is skipped; local Markdown still written. |
 | `SOURCE_REF_BASE`             | `extractor/source_ref.py` | Autodetect from `git remote` + current branch; fall back to local absolute path. |
 

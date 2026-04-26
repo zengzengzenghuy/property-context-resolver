@@ -225,6 +225,19 @@ class Summarizer:
             else:
                 return fallback
 
+            # -- Tavily Integration: Legal Fact-Checking --
+            from .tavily import get_oracle
+            import re
+            oracle = get_oracle()
+            if oracle.enabled and text:
+                # Find citations like "§ 288 BGB" or "§286 BGB"
+                citations = set(re.findall(r'§\s*\d+[a-z]?\s+[A-Z][a-zA-Z]+', text))
+                for cit in citations:
+                    alert = oracle.check_legal_citation(cit)
+                    if alert:
+                        text += f"\n\n> [!WARNING] **Tavily Legal Alert ({cit}):** {alert}"
+                        break # One alert is enough to flag the block
+
             out = text or fallback
         except Exception:
             return fallback

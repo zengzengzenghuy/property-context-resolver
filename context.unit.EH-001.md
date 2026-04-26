@@ -5,7 +5,7 @@
 > **Property-wide data lives in `context.property.md`** — see `parent_property_ref` below.
 
 <!-- auto:meta -->
-- last_built_at: `2026-04-26T09:26:37+00:00`
+- last_built_at: `2026-04-26T09:54:30+00:00`
 - build_hash: `engine-v2`
 - engine_version: `0.2.0`
 - schema_version: `spine-v2-split` (2026-04-25)
@@ -19,7 +19,7 @@
 ---
 
 ## 1. Unit
-<!-- auto:unit.summary -->[Administrative] Einheit EH-001 (WE 01, 4-Zimmer-Wohnung, 103 qm, 1. OG links, Miteigentumsanteil 241/10000) zeigt Zahlungseingang vom 2025-12-05: 32,73 EUR Hausgeld für 12/2025 von Osman Jacob [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-00043), mit Verwendungszweck „Hausgeld 12/2025 EH-001,EH-030" [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#einheit/EH-001). Verkaufsabsicht dokumentiert 2024-08-24; aktuelle Eigentümerschaft und Hausgeldschuldner-Identität sind zu verifizieren (Abweichung: Zahler „Osman Jacob" vs. Eigentümer in Stammdaten unklar).<!-- /auto:unit.summary -->
+<!-- auto:unit.summary -->[Administrative] Einheit EH-001 (WE 01, 103 qm, 4 Zimmer, 1. OG links, MEA 241/1000) ist im Stammdatensystem erfasst [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#einheit/EH-001). Zahlung vom 2025-12-05 über 32,73 EUR Hausgeld für Periode 12/2025 von Osman Jacob verbucht; Verwendungszweck nennt EH-001 und EH-030 [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-00043). Verkaufsabsicht gemäß Mitteilung 2024-08-24 dokumentiert; Status und Abwicklung sind zu überprüfen.<!-- /auto:unit.summary -->
 
 <!-- auto:unit -->
 - unit_id: `EH-001`
@@ -148,7 +148,7 @@ _(no data in source yet)_
 ---
 
 ## 5. Provenance & Source Index (this unit/tenant)
-<!-- auto:provenance.summary -->_no issue_<!-- /auto:provenance.summary -->
+<!-- auto:provenance.summary -->[Administrative] Einheit EH-001 (WE 01, 103 m², 4 Zimmer, Miteigentumsanteil 241/1000) zeigt konsistente Stammdaten [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#einheit/EH-001) und aktiven Zahlungsverkehr: Hausgeld 12/2025 (32,73 EUR) eingegangen 2025-12-05 von Osman Jacob [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-00043). Verkaufsabsicht dokumentiert 2024-08-24, Mieterwechsel-Thread seit 2024-01-30 aktiv (5 Nachrichten bis 2025-12-15), Abflussticket eröffnet 2024-03-06. Keine Vertragsabweichungen oder offenen Forderungen erkannt; Status zur Verarbeitung freigegeben.<!-- /auto:provenance.summary -->
 
 <!-- auto:provenance -->
 | source-id | type | path | last_seen |
@@ -159,7 +159,7 @@ _(no data in source yet)_
 | `20240306_161700_EMAIL-00566-eml` | email | [emails/2024-03/20240306_161700_EMAIL-00566.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-03/20240306_161700_EMAIL-00566.eml) | 2024-03-06T16:17:00+00:00 |
 | `20240824_184100_EMAIL-02144-eml` | email | [emails/2024-08/20240824_184100_EMAIL-02144.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-08/20240824_184100_EMAIL-02144.eml) | 2024-08-24T18:41:00+00:00 |
 | `20251215_103000_EMAIL-06400-eml` | email | [emails/2025-12/20251215_103000_EMAIL-06400.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251215_103000_EMAIL-06400.eml) | 2025-12-15 |
-| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-26T09:26:19+00:00 |
+| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-26T09:54:05+00:00 |
 <!-- /auto:provenance -->
 
 ---

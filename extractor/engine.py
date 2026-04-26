@@ -407,6 +407,16 @@ class DunningReconciler:
     ecb_base_pp: float = ECB_BASE_PP
     grace_days: int = DEFAULT_GRACE_DAYS
 
+    def __post_init__(self) -> None:
+        from .tavily import get_oracle
+        oracle = get_oracle()
+        if oracle.enabled:
+            # Try to fetch live rate if doing a calculation for today/current
+            # We fetch it unconditionally if Tavily is enabled to be safe.
+            live_rate = oracle.get_ecb_base_rate()
+            if live_rate is not None:
+                self.ecb_base_pp = live_rate
+
     def reconcile(self, tenant_id: str) -> int:
         emitted = 0
 
