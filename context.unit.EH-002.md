@@ -5,7 +5,7 @@
 > **Property-wide data lives in `context.property.md`** — see `parent_property_ref` below.
 
 <!-- auto:meta -->
-- last_built_at: `2026-04-25T20:52:19+00:00`
+- last_built_at: `2026-04-26T09:26:43+00:00`
 - build_hash: `engine-v2`
 - engine_version: `0.2.0`
 - schema_version: `spine-v2-split` (2026-04-25)
@@ -19,6 +19,8 @@
 ---
 
 ## 1. Unit
+<!-- auto:unit.summary -->[Routine] Einheit EH-002 (WE 02, 1,5-Zimmer-Wohnung, 49 qm, 1. OG mitte) hat am 2025-12-06 ein defektes Fenster gemeldet [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#einheit/EH-002). Hausgeld wurde zuletzt am 2025-12-04 mit 9,70 EUR eingezahlt [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-00014). Reparaturpflicht für Fenster liegt beim Vermieter nach § 535 Abs. 1 BGB (Erhaltungspflicht); Ticket ist seit 2025-12-06 offen und benötigt Abschluss oder Statusupdate.<!-- /auto:unit.summary -->
+
 <!-- auto:unit -->
 - unit_id: `EH-002`
 - label: WE 02
@@ -40,6 +42,8 @@
 ---
 
 ## 2. Lease (Mietverhältnis, voll)
+<!-- auto:lease.summary -->[Routine] Mieter MIE-009 (Marliese Hermann, EH-002) hat Mietvertrag zum nächstmöglichen Termin gekündigt; Kündigungsmitteilung vorgelegen am [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-08/20250820_141700_EMAIL-05358.eml) 2025-08-20. Vertrag läuft seit 2021-01-21 mit Kaltmiete 724,00 EUR + NK 140,00 EUR; Kaution 2.172,00 EUR hinterlegt. Kündigungsfrist § 573 Abs. 1 BGB (4 Wochen zum 15. oder Ende eines Kalendermonats): wirksame Beendigung frühestens 2025-09-30; Kündigungsbestätigung und Endreinigung sowie NK-Abrechnung ausstehend.<!-- /auto:lease.summary -->
+
 <!-- auto:lease -->
 - lease_id: `LEASE-MIE-009`
 - unit_ref: `EH-002`
@@ -57,6 +61,8 @@
 <!-- /auto:lease -->
 
 ### 2.1 Tenants on this Lease
+<!-- auto:tenants.summary -->_no issue_<!-- /auto:tenants.summary -->
+
 <!-- auto:tenants -->
 | tenant_id | name | role | contact_email | contact_phone | comms_pref | gesamtschuldner |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -68,6 +74,8 @@
 ## 3. Operations (this unit / this tenant)
 
 ### 3.1 Open Tickets — Critical (overdue or due ≤7 days)
+<!-- auto:tickets.critical.summary -->[Routine] Mieter EH-002 meldet seit Mai 2025 wiederholt defektes Küchenfenster (loser Griff, gelöste Dichtung), zuletzt am 2025-12-05, ohne dass Reparatur durchgeführt wurde; Verwaltung bestätigte 2025-05-11 "umgehende" Beauftragung eines Handwerkers. Vermieter haftet nach § 535 I BGB für Erhaltung der Mietsache in vermietungsfähigem Zustand; Mängelanzeige initiiert Frist zur Behebung nach § 536 I BGB — sieben Monate Untätigkeit trotz Zusage verletzt diese Pflicht. Ticket geöffnet 2025-12-06, Mieterkündigung zum 2026-01-11 bestätigt, Wohnungsübergabe März 2026 geplant; Fensterreparatur vor Auszug erforderlich, um Schadensersatzforderungen zu vermeiden.<!-- /auto:tickets.critical.summary -->
+
 <!-- auto:tickets.critical -->
 | ticket_id | type | title | deadline | status | assignee |
 | --- | --- | --- | --- | --- | --- |
@@ -81,6 +89,8 @@
 <!-- /auto:tickets.critical -->
 
 ### 3.2 Open Tickets — Aggregate
+<!-- auto:tickets.aggregate.summary -->[Routine] Mieter EH-002 meldet defektes Fenster seit 2025-12-06 [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-09/20240928_172600_EMAIL-02476.eml). Nach § 535 II BGB (Erhaltungspflicht Vermieter) ist die Beseitigung von Mängeln, die die Gebrauchstauglichkeit mindern, geschuldet; Frist zur Mängelbeseitigung § 536a BGB (angemessene Frist, regelmäßig 2 Wochen). Ticket liegt seit 142 Tagen offen — Mängelrüge dokumentiert, sofortige Reparaturterminierung erforderlich.<!-- /auto:tickets.aggregate.summary -->
+
 <!-- auto:tickets.aggregate -->
 - total_open: `29`
 - by_type: { abfluss: `7`, fenster: `10`, schimmel: `4`, schluessel: `5`, wasserschaden: `3` }
@@ -89,7 +99,7 @@
 
 ### 3.3 Active Mahnverfahren
 
-<!-- auto:dunning.summary -->[Routine] Mieter MIE-009 ist seit vier Monaten im Verzug; offener Betrag 3.456,00 EUR zzgl. 44,27 EUR Verzugszinsen, letzte Zahlung 2025-12-03 [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-01581). Vertraglich geschuldet sind monatlich 864,00 EUR (Kaltmiete 724,00 EUR + NK 140,00 EUR) [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#mieter/MIE-009). Verzug nach § 286 BGB festgestellt, Verzugszinsen § 288 I BGB; Mahnstufe 1 erreicht, nächster Schritt: 2. Mahnung nach 14 Tagen.<!-- /auto:dunning.summary -->
+<!-- auto:dunning.summary -->[Routine] Mieter MIE-009 ist seit vier Monaten im Verzug; offener Betrag 3.456,00 EUR zzgl. 45,07 EUR Verzugszinsen, letzte Zahlung 2025-12-03 [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-01581). Vertraglich geschuldet sind monatlich 864,00 EUR (Kaltmiete 724,00 EUR + NK 140,00 EUR) [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#mieter/MIE-009). Verzug nach § 286 BGB festgestellt, Verzugszinsen § 288 I BGB; Mahnstufe 1 aktiv, 2. Mahnung fällig nach 14 Tagen.<!-- /auto:dunning.summary -->
 
 #### Per claim
 <!-- auto:dunning -->
@@ -100,6 +110,8 @@
 <!-- /auto:dunning -->
 
 ### 3.4 Active Reductions / Deferrals (§ 536 BGB)
+<!-- auto:reductions.summary -->[Emergency] Mieter EH-002 kündet einseitige Mietminderung um 15% ab 2025-04-01 an [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-03/20250302_154200_EMAIL-03902.eml); Grund: Wasserschaden und Schimmel seit über drei Monaten unbehoben. Nach § 536 BGB (Mietmängelrecht) kann der Mieter bei erheblichen Mängeln, die die Gebrauchstauglichkeit mindern, die Miete mindern; Voraussetzung ist Gebrauchstauglichkeit nicht vorhanden und Meldung an Vermieter erfolgt (vorliegend 2025-03-02 gemeldet). Kritisch: identische Ankündigung bereits 2024-04-03 für 2024-05-01 [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-04/20240403_123900_EMAIL-00816.eml) — Mängel bestehen seit mindestens 22 Monaten; sofortige Schadensbesichtigung und Sanierungszeitplan erforderlich, sonst Mietminderung und Schadensersatzansprüche gem. § 537 BGB unvermeidbar.<!-- /auto:reductions.summary -->
+
 <!-- auto:reductions -->
 - date_raised: 2024-04-03
 - amount_or_percent: —
@@ -115,9 +127,13 @@
 <!-- /auto:reductions -->
 
 ### 3.5 Latest Übergabeprotokoll
+<!-- auto:handover.summary -->_no issue_<!-- /auto:handover.summary -->
+
 <!-- auto:handover -->_(no data in source yet)_<!-- /auto:handover -->
 
 ### 3.6 Recurring Process State (this unit, in-flight)
+<!-- auto:recurring.summary -->[Administrative] Mieter MIE-009 (Einheit EH-002) hat den Mietvertrag vier Mal eingereicht — erstmals 2024-07-08 [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-07/20240708_135300_EMAIL-01696.eml), zuletzt 2025-08-20 [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-08/20250820_141700_EMAIL-05358.eml) — ohne bisherige schriftliche Bestätigung des Kündigungstermins. § 573 I BGB verlangt schriftliche Form; eine einmalige wirksame Kündigung setzt eine klare Abwicklung voraus, wiederholte identische Anträge deuten auf fehlende Quittung. Klärung erforderlich: Welche Kündigung gilt als rechtswirksam, und an welches Kündigungsdatum ist der Mieter gebunden?<!-- /auto:recurring.summary -->
+
 <!-- auto:recurring -->
 | process_type | started | current_step | owner | eta | blockers |
 | --- | --- | --- | --- | --- | --- |
@@ -125,6 +141,8 @@
 <!-- /auto:recurring -->
 
 ### 3.7 Vermietungs-Pipeline *(if vacant)*
+<!-- auto:vermietung.summary -->_no issue_<!-- /auto:vermietung.summary -->
+
 <!-- auto:vermietung -->_Not yet activated. Triggers when occupancy_status flips to vacant after move-out._<!-- /auto:vermietung -->
 
 ---
@@ -132,6 +150,8 @@
 ## 4. Decisions & History (this unit / this tenant)
 
 ### 4.1 Tenant Special Agreements
+<!-- auto:tenant-agreements.summary -->_no issue_<!-- /auto:tenant-agreements.summary -->
+
 <!-- auto:tenant-agreements -->
 | date | type | one-line | doc_ref |
 | --- | --- | --- | --- |
@@ -139,6 +159,8 @@ _(no data in source yet)_
 <!-- /auto:tenant-agreements -->
 
 ### 4.2 Modernisierungs-Maßnahmen (this unit)
+<!-- auto:modernization-unit.summary -->_no issue_<!-- /auto:modernization-unit.summary -->
+
 <!-- auto:modernization-unit -->
 | date_completed | scope | umlage_per_year | rent_increase_per_month | tenant_opted_out |
 | --- | --- | --- | --- | --- |
@@ -146,6 +168,8 @@ _(no data in source yet)_
 <!-- /auto:modernization-unit -->
 
 ### 4.3 Sticky Communication Threads (this tenant)
+<!-- auto:sticky-threads.summary -->[Routine] Mieter MIE-009 meldet seit 2024-01-09 einen verstopften Abfluss in der Dusche (WE 09); Thread mit 117 Meldungen bleibt aktiv, letzte Meldung 2025-12-30 [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251230_144800_EMAIL-06532.eml). Nach § 535 I 1 BGB ist der Vermieter verpflichtet, die Mietsache in einem zum vertragsgemäßen Gebrauch geeigneten Zustand zu erhalten; Beseitigung von Rohrverstopfungen fällt unter Instandhaltung nach § 536 BGB. Handwerkliche Instandsetzung ist erforderlich; Laufzeit von fast zwei Jahren deutet auf Bearbeitungsrückstand hin — sofortige Terminvergabe und Bestätigung erforderlich.<!-- /auto:sticky-threads.summary -->
+
 <!-- auto:sticky-threads -->
 | thread_id | subject | last_msg_date | parties | status | one-line outcome | pointer |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -156,10 +180,12 @@ _(no data in source yet)_
 ---
 
 ## 5. Provenance & Source Index (this unit/tenant)
+<!-- auto:provenance.summary -->_no issue_<!-- /auto:provenance.summary -->
+
 <!-- auto:provenance -->
 | source-id | type | path | last_seen |
 | --- | --- | --- | --- |
-| `kontoauszug_2024_2025-csv` | bank | [bank/kontoauszug_2024_2025.csv](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv) | 2026-04-25 |
+| `kontoauszug_2024_2025-csv` | bank | [bank/kontoauszug_2024_2025.csv](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv) | 2026-04-26 |
 | `20240201_103600_EMAIL-00261-eml` | email | [emails/2024-02/20240201_103600_EMAIL-00261.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-02/20240201_103600_EMAIL-00261.eml) | 2024-02-01T10:36:00+00:00 |
 | `20240213_153700_EMAIL-00374-eml` | email | [emails/2024-02/20240213_153700_EMAIL-00374.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-02/20240213_153700_EMAIL-00374.eml) | 2024-02-13T15:37:00+00:00 |
 | `20240225_114200_EMAIL-00465-eml` | email | [emails/2024-02/20240225_114200_EMAIL-00465.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-02/20240225_114200_EMAIL-00465.eml) | 2024-02-25T11:42:00+00:00 |
@@ -241,7 +267,7 @@ _(no data in source yet)_
 | `20251206_200500_EMAIL-06316-eml` | email | [emails/2025-12/20251206_200500_EMAIL-06316.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251206_200500_EMAIL-06316.eml) | 2025-12-06T20:05:00+00:00 |
 | `20251216_155800_EMAIL-06415-eml` | email | [emails/2025-12/20251216_155800_EMAIL-06415.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251216_155800_EMAIL-06415.eml) | 2025-12-16 |
 | `20251230_144800_EMAIL-06532-eml` | email | [emails/2025-12/20251230_144800_EMAIL-06532.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251230_144800_EMAIL-06532.eml) | 2025-12-30 |
-| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-25T20:52:09+00:00 |
+| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-26T09:26:19+00:00 |
 <!-- /auto:provenance -->
 
 ---

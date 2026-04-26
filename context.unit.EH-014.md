@@ -5,7 +5,7 @@
 > **Property-wide data lives in `context.property.md`** — see `parent_property_ref` below.
 
 <!-- auto:meta -->
-- last_built_at: `2026-04-25T20:52:30+00:00`
+- last_built_at: `2026-04-26T09:30:14+00:00`
 - build_hash: `engine-v2`
 - engine_version: `0.2.0`
 - schema_version: `spine-v2-split` (2026-04-25)
@@ -19,6 +19,8 @@
 ---
 
 ## 1. Unit
+<!-- auto:unit.summary -->[Administrative] Einheit EH-014 (WE 14, 3-Zimmer-Wohnung, 85 qm, 5. OG mitte) mit Miteigentumsanteil 197/10000 in HAUS-12 [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#einheit/EH-014). Verkaufsabsicht gemeldet 2025-06-16 durch Eigentümer Ingolf Röhricht; Hausgeld-Zahlung für 12/2025 eingegangen 2025-12-05 (13,95 EUR) [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-01608). Vertragliche Verpflichtung zur Hausgeld-Zahlung nach WEG-Vereinbarung und § 21 III WEG; weiteres Vorgehen bei Verkauf abhängig von notarieller Beurkundung und Registeranmeldung.<!-- /auto:unit.summary -->
+
 <!-- auto:unit -->
 - unit_id: `EH-014`
 - label: WE 14
@@ -40,9 +42,13 @@
 ---
 
 ## 2. Lease (Mietverhältnis, voll)
+<!-- auto:lease.summary -->_no issue_<!-- /auto:lease.summary -->
+
 <!-- auto:lease -->_(no data in source yet)_<!-- /auto:lease -->
 
 ### 2.1 Tenants on this Lease
+<!-- auto:tenants.summary -->_no issue_<!-- /auto:tenants.summary -->
+
 <!-- auto:tenants -->
 | tenant_id | name | role | contact_email | contact_phone | comms_pref | gesamtschuldner |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -54,6 +60,8 @@ _(no data in source yet)_
 ## 3. Operations (this unit / this tenant)
 
 ### 3.1 Open Tickets — Critical (overdue or due ≤7 days)
+<!-- auto:tickets.critical.summary -->[Emergency] Wasserschaden in Einheit EH-014 (Badezimmer) seit 2025-09-04, Wasser tropft von der Decke, vermutlich aus der überlagerten Wohnung [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-09/20250904_161300_EMAIL-05521.eml). Verwalter ist zur sofortigen Schadensabwehr verpflichtet (§ 535 Abs. 1 BGB, Habitabilität). Handwerkereinsatz erforderlich ohne Verzug; Dokumentation und ggf. Wasserschaden-Versicherungsmeldung einleiten.<!-- /auto:tickets.critical.summary -->
+
 <!-- auto:tickets.critical -->
 | ticket_id | type | title | deadline | status | assignee |
 | --- | --- | --- | --- | --- | --- |
@@ -61,6 +69,8 @@ _(no data in source yet)_
 <!-- /auto:tickets.critical -->
 
 ### 3.2 Open Tickets — Aggregate
+<!-- auto:tickets.aggregate.summary -->[Emergency] Wasserschaden im Bad der Einheit EH-014, gemeldet 2025-09-04 [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-09/20250904_161300_EMAIL-05521.eml). Mieter ist verpflichtet, Schäden unverzüglich anzuzeigen (§ 536c BGB); Vermieter muss Schadensersatz und Mängelbeseitigung nach § 535 I BGB gewährleisten. Ticket liegt über 7 Monate offen — sofortige Schadensaufnahme, Handwerkerbeauftragung und Dokumentation erforderlich.<!-- /auto:tickets.aggregate.summary -->
+
 <!-- auto:tickets.aggregate -->
 - total_open: `1`
 - by_type: { wasserschaden: `1` }
@@ -80,12 +90,18 @@ _(no data in source yet)_
 <!-- /auto:dunning -->
 
 ### 3.4 Active Reductions / Deferrals (§ 536 BGB)
+<!-- auto:reductions.summary -->_no issue_<!-- /auto:reductions.summary -->
+
 <!-- auto:reductions -->_(no data in source yet)_<!-- /auto:reductions -->
 
 ### 3.5 Latest Übergabeprotokoll
+<!-- auto:handover.summary -->_no issue_<!-- /auto:handover.summary -->
+
 <!-- auto:handover -->_(no data in source yet)_<!-- /auto:handover -->
 
 ### 3.6 Recurring Process State (this unit, in-flight)
+<!-- auto:recurring.summary -->_no issue_<!-- /auto:recurring.summary -->
+
 <!-- auto:recurring -->
 | process_type | started | current_step | owner | eta | blockers |
 | --- | --- | --- | --- | --- | --- |
@@ -93,6 +109,8 @@ _(no data in source yet)_
 <!-- /auto:recurring -->
 
 ### 3.7 Vermietungs-Pipeline *(if vacant)*
+<!-- auto:vermietung.summary -->_no issue_<!-- /auto:vermietung.summary -->
+
 <!-- auto:vermietung -->_Not yet activated. Triggers when occupancy_status flips to vacant after move-out._<!-- /auto:vermietung -->
 
 ---
@@ -100,6 +118,8 @@ _(no data in source yet)_
 ## 4. Decisions & History (this unit / this tenant)
 
 ### 4.1 Tenant Special Agreements
+<!-- auto:tenant-agreements.summary -->_no issue_<!-- /auto:tenant-agreements.summary -->
+
 <!-- auto:tenant-agreements -->
 | date | type | one-line | doc_ref |
 | --- | --- | --- | --- |
@@ -107,6 +127,8 @@ _(no data in source yet)_
 <!-- /auto:tenant-agreements -->
 
 ### 4.2 Modernisierungs-Maßnahmen (this unit)
+<!-- auto:modernization-unit.summary -->_no issue_<!-- /auto:modernization-unit.summary -->
+
 <!-- auto:modernization-unit -->
 | date_completed | scope | umlage_per_year | rent_increase_per_month | tenant_opted_out |
 | --- | --- | --- | --- | --- |
@@ -114,6 +136,8 @@ _(no data in source yet)_
 <!-- /auto:modernization-unit -->
 
 ### 4.3 Sticky Communication Threads (this tenant)
+<!-- auto:sticky-threads.summary -->[Administrative] Eigentümer EH-014 teilt Verkaufsabsicht mit (2025-10-18) und fordert Hausgeldzahlungsbescheinigung sowie ETV-Protokolle an [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-10/20251018_152000_EMAIL-05907.eml). Thread seit 2024-01-08 aktiv, 10 Nachrichten, letzte Nachricht 2025-10-18 — Status: offen. Auskunftserteilung erforderlich nach § 28 Abs. 3 WEG (Bescheinigung über Hausgelder und ETV-Unterlagen sind im Kontext von Eigentumsübertrag zu dokumentieren); Fristen nach MV und internem Verwaltungsprozess zu prüfen.<!-- /auto:sticky-threads.summary -->
+
 <!-- auto:sticky-threads -->
 | thread_id | subject | last_msg_date | parties | status | one-line outcome | pointer |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -123,6 +147,8 @@ _(no data in source yet)_
 ---
 
 ## 5. Provenance & Source Index (this unit/tenant)
+<!-- auto:provenance.summary -->[Administrative] Einheit EH-014 (WE 14, 3-Zimmer-Wohnung, 85 m², 5. OG, Miteigentumsanteil 197/10000) ist in [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#einheit/EH-014) vollständig erfasst; Hausgeldzahlung 12/2025 (13,95 EUR, 2025-12-05) eingebucht [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-00018). Verkaufsabsicht dokumentiert (Thread seit 2024-01-08, zuletzt 2025-10-18, 10 Nachrichten); kritischer Wasserschaden Bad eröffnet 2025-09-04 und parallel anhängig. Keine Abweichung zwischen Stammdaten und Bankbewegungen; Verkauf und Schadensabwicklung erfordern Koordination mit potenzieller Nachfolge-Eigentümerschaft nach § 181 BGB (Haftung Vorgänger).<!-- /auto:provenance.summary -->
+
 <!-- auto:provenance -->
 | source-id | type | path | last_seen |
 | --- | --- | --- | --- |
@@ -131,7 +157,7 @@ _(no data in source yet)_
 | `20250616_035700_EMAIL-04787-eml` | email | [emails/2025-06/20250616_035700_EMAIL-04787.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-06/20250616_035700_EMAIL-04787.eml) | 2025-06-16T03:57:00+00:00 |
 | `20250904_161300_EMAIL-05521-eml` | email | [emails/2025-09/20250904_161300_EMAIL-05521.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-09/20250904_161300_EMAIL-05521.eml) | 2025-09-04T16:13:00+00:00 |
 | `20251018_152000_EMAIL-05907-eml` | email | [emails/2025-10/20251018_152000_EMAIL-05907.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-10/20251018_152000_EMAIL-05907.eml) | 2025-10-18 |
-| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-25T20:52:09+00:00 |
+| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-26T09:26:19+00:00 |
 <!-- /auto:provenance -->
 
 ---

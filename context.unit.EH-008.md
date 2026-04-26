@@ -5,7 +5,7 @@
 > **Property-wide data lives in `context.property.md`** — see `parent_property_ref` below.
 
 <!-- auto:meta -->
-- last_built_at: `2026-04-25T20:52:26+00:00`
+- last_built_at: `2026-04-26T09:27:59+00:00`
 - build_hash: `engine-v2`
 - engine_version: `0.2.0`
 - schema_version: `spine-v2-split` (2026-04-25)
@@ -19,6 +19,8 @@
 ---
 
 ## 1. Unit
+<!-- auto:unit.summary -->_no issue_<!-- /auto:unit.summary -->
+
 <!-- auto:unit -->
 - unit_id: `EH-008`
 - label: WE 08
@@ -40,9 +42,13 @@
 ---
 
 ## 2. Lease (Mietverhältnis, voll)
+<!-- auto:lease.summary -->_no issue_<!-- /auto:lease.summary -->
+
 <!-- auto:lease -->_(no data in source yet)_<!-- /auto:lease -->
 
 ### 2.1 Tenants on this Lease
+<!-- auto:tenants.summary -->_no issue_<!-- /auto:tenants.summary -->
+
 <!-- auto:tenants -->
 | tenant_id | name | role | contact_email | contact_phone | comms_pref | gesamtschuldner |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -54,6 +60,8 @@ _(no data in source yet)_
 ## 3. Operations (this unit / this tenant)
 
 ### 3.1 Open Tickets — Critical (overdue or due ≤7 days)
+<!-- auto:tickets.critical.summary -->_no issue_<!-- /auto:tickets.critical.summary -->
+
 <!-- auto:tickets.critical -->
 | ticket_id | type | title | deadline | status | assignee |
 | --- | --- | --- | --- | --- | --- |
@@ -61,6 +69,8 @@ _(no data in source yet)_
 <!-- /auto:tickets.critical -->
 
 ### 3.2 Open Tickets — Aggregate
+<!-- auto:tickets.aggregate.summary -->_no issue_<!-- /auto:tickets.aggregate.summary -->
+
 <!-- auto:tickets.aggregate -->
 - total_open: `0`
 - by_type: { — }
@@ -80,12 +90,18 @@ _(no data in source yet)_
 <!-- /auto:dunning -->
 
 ### 3.4 Active Reductions / Deferrals (§ 536 BGB)
+<!-- auto:reductions.summary -->_no issue_<!-- /auto:reductions.summary -->
+
 <!-- auto:reductions -->_(no data in source yet)_<!-- /auto:reductions -->
 
 ### 3.5 Latest Übergabeprotokoll
+<!-- auto:handover.summary -->_no issue_<!-- /auto:handover.summary -->
+
 <!-- auto:handover -->_(no data in source yet)_<!-- /auto:handover -->
 
 ### 3.6 Recurring Process State (this unit, in-flight)
+<!-- auto:recurring.summary -->_no issue_<!-- /auto:recurring.summary -->
+
 <!-- auto:recurring -->
 | process_type | started | current_step | owner | eta | blockers |
 | --- | --- | --- | --- | --- | --- |
@@ -93,6 +109,8 @@ _(no data in source yet)_
 <!-- /auto:recurring -->
 
 ### 3.7 Vermietungs-Pipeline *(if vacant)*
+<!-- auto:vermietung.summary -->_no issue_<!-- /auto:vermietung.summary -->
+
 <!-- auto:vermietung -->_Not yet activated. Triggers when occupancy_status flips to vacant after move-out._<!-- /auto:vermietung -->
 
 ---
@@ -100,6 +118,8 @@ _(no data in source yet)_
 ## 4. Decisions & History (this unit / this tenant)
 
 ### 4.1 Tenant Special Agreements
+<!-- auto:tenant-agreements.summary -->_no issue_<!-- /auto:tenant-agreements.summary -->
+
 <!-- auto:tenant-agreements -->
 | date | type | one-line | doc_ref |
 | --- | --- | --- | --- |
@@ -107,6 +127,8 @@ _(no data in source yet)_
 <!-- /auto:tenant-agreements -->
 
 ### 4.2 Modernisierungs-Maßnahmen (this unit)
+<!-- auto:modernization-unit.summary -->_no issue_<!-- /auto:modernization-unit.summary -->
+
 <!-- auto:modernization-unit -->
 | date_completed | scope | umlage_per_year | rent_increase_per_month | tenant_opted_out |
 | --- | --- | --- | --- | --- |
@@ -114,6 +136,8 @@ _(no data in source yet)_
 <!-- /auto:modernization-unit -->
 
 ### 4.3 Sticky Communication Threads (this tenant)
+<!-- auto:sticky-threads.summary -->[Administrative] Wohnungseigentümer Xenia Conradi (WE 08) kündigte zunächst Verkaufsabsicht an (2025-08-11), meldete dann Mieterkündigung zum 31.12.2025 mit Freizug 2026-01-20 (2025-11-25) [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-11/20251125_131200_EMAIL-06221.eml). Thread umfasst 4 Nachrichten über 4 Monate; Übergabe und Neu­ver­mar­ktung müssen koordiniert werden. Wohnungseigentümer ist zur Mitteilung von Mieterwechsel und Neuvermietung verpflichtet (WEG-Stammdaten, evtl. Maklergebühren/Sanierungskosten); Freizugsdatum 2026-01-20 ist für Maklerprozess und Maklerbudgetierung relevant.<!-- /auto:sticky-threads.summary -->
+
 <!-- auto:sticky-threads -->
 | thread_id | subject | last_msg_date | parties | status | one-line outcome | pointer |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -124,6 +148,8 @@ _(no data in source yet)_
 ---
 
 ## 5. Provenance & Source Index (this unit/tenant)
+<!-- auto:provenance.summary -->[Administrative] Einheit EH-008 (WE 08, 1,5 Zimmer, 48 qm, 3. OG) ist im Stammdaten-System erfasst [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#einheit/EH-008) mit Miteigentumsanteil 111/10000 und Haus-ID HAUS-12. Ein aktiver Gesprächsfaden zu „Mieterwechsel in WE 08" läuft seit 2025-07-22 (zuletzt aktualisiert 2025-11-25, 4 Nachrichten); parallel existiert eine historische Notiz zu Verkaufsabsicht vom 2024-07-11. Eine Hausgeld-Zahlung von 7,86 EUR (Periode 12/2025, Zahler Xenia Conradi) wurde am 2025-12-05 verbucht [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-00019) — dieser Betrag ist ungewöhnlich niedrig und erfordert Klärung der tatsächlichen Hausgeldschuld sowie der aktuellen Mieter-/Eigentümeräußerung.<!-- /auto:provenance.summary -->
+
 <!-- auto:provenance -->
 | source-id | type | path | last_seen |
 | --- | --- | --- | --- |
@@ -133,7 +159,7 @@ _(no data in source yet)_
 | `20250715_004800_EMAIL-05040-eml` | email | [emails/2025-07/20250715_004800_EMAIL-05040.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-07/20250715_004800_EMAIL-05040.eml) | 2025-07-15T00:48:00+00:00 |
 | `20250811_154900_EMAIL-05258-eml` | email | [emails/2025-08/20250811_154900_EMAIL-05258.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-08/20250811_154900_EMAIL-05258.eml) | 2025-08-11 |
 | `20251125_131200_EMAIL-06221-eml` | email | [emails/2025-11/20251125_131200_EMAIL-06221.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-11/20251125_131200_EMAIL-06221.eml) | 2025-11-25 |
-| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-25T20:52:09+00:00 |
+| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-26T09:26:19+00:00 |
 <!-- /auto:provenance -->
 
 ---

@@ -17,6 +17,8 @@
 ---
 
 ## 1. Property
+<!-- auto:property.summary -->_no issue_<!-- /auto:property.summary -->
+
 <!-- auto:property -->
 - property_id: `<UUID>` *(e.g. LIE-001)*
 - address: `<street, postal_code, city>` [^addr]
@@ -33,6 +35,8 @@
 <!-- /auto:property -->
 
 ### 1.1 Owner(s)
+<!-- auto:owners.summary -->_no issue_<!-- /auto:owners.summary -->
+
 <!-- auto:owners -->
 | owner_id | name | share_‰ (MEA) | unit_refs | contact | reporting_pref | sale_intent | beirat |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -40,6 +44,8 @@
 *`sale_intent`: `none | considering | listed | under_contract`; if ≠ none → `{ since, requested_docs[] }` in footnote.*
 
 ### 1.2 Verwaltermandat
+<!-- auto:mandate.summary -->_no issue_<!-- /auto:mandate.summary -->
+
 <!-- auto:mandate -->
 - manager: `<company>` · contact, iban, steuernummer
 - start, term, notice_period, fee_basis, scope (`WEG | Sondereigentum | both`)
@@ -50,6 +56,8 @@
 ## 2. Units Index
 > Roster only. Detail lives in per-unit files.
 
+<!-- auto:units-index.summary -->_no issue_<!-- /auto:units-index.summary -->
+
 <!-- auto:units-index -->
 | unit_id | label | haus_id | floor | sqm | rooms | typ (`Wohnung|GE|Stellplatz`) | mea_‰ | occupancy (`rented|vacant|own-use`) | owner_ref | unit_md_ref |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -58,6 +66,8 @@
 ---
 
 ## 3. Compliance Calendar (property-wide)
+<!-- auto:compliance.summary -->_no issue_<!-- /auto:compliance.summary -->
+
 <!-- auto:compliance -->
 | obligation | last_done | next_due | vendor_ref | status | evidence_doc_ref |
 | --- | --- | --- | --- | --- | --- |
@@ -75,18 +85,24 @@
 ## 4. Vendor Operations (property-wide)
 
 ### 4.1 Open Vendor Quotes
+<!-- auto:vendor-quotes.summary -->_no issue_<!-- /auto:vendor-quotes.summary -->
+
 <!-- auto:vendor-quotes -->
 | vendor_ref | scope | amount | valid_until | decision (`pending|accepted|rejected`) | doc_ref |
 | --- | --- | --- | --- | --- | --- |
 <!-- /auto:vendor-quotes -->
 
 ### 4.2 Vendor Dunning AGAINST US (Mahnungen, die wir bekommen)
+<!-- auto:vendor-dunning.summary -->_no issue_<!-- /auto:vendor-dunning.summary -->
+
 <!-- auto:vendor-dunning -->
 | vendor_ref | invoice_no | amount | stage (`1|2|gerichtlich`) | since | deadline | reason |
 | --- | --- | --- | --- | --- | --- | --- |
 <!-- /auto:vendor-dunning -->
 
 ### 4.3 Recurring Property Processes (in-flight, property-wide)
+<!-- auto:recurring-property.summary -->_no issue_<!-- /auto:recurring-property.summary -->
+
 <!-- auto:recurring-property -->
 | process_type (`Modernisierung|NK-Lauf|Hausgeld-Lauf|ETV-Vorbereitung`) | started | current_step | owner | eta | blockers |
 | --- | --- | --- | --- | --- | --- |
@@ -95,6 +111,8 @@
 ---
 
 ## 5. Financials (snapshot, last build)
+<!-- auto:financials.summary -->_no issue_<!-- /auto:financials.summary -->
+
 <!-- auto:financials -->
 - last_nk_abrechnung: { period, total_costs, total_advances, balance_per_unit_ref, sent_date, disputes_open }
 - last_hausgeld_abrechnung *(WEG only)*: { period, total, owner_balances, sent_date }
@@ -125,6 +143,8 @@
 ## 6. Stakeholders
 
 ### 6.1 Service-Vendors & Versicherungen
+<!-- auto:stakeholders.summary -->_no issue_<!-- /auto:stakeholders.summary -->
+
 <!-- auto:stakeholders -->
 | role | name | contact | vertragstyp (`monatlich|stundensatz|sporadisch`) | next_service_due | last_invoice (date/amount) | open_balance_against_us | iban_change_log_ref |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -148,6 +168,8 @@
 <!-- /auto:stakeholders -->
 
 ### 6.2 Versorger (Strom, Gas, Wasser, Müll)
+<!-- auto:utilities.summary -->_no issue_<!-- /auto:utilities.summary -->
+
 <!-- auto:utilities -->
 | type (`Strom|Gas|Wasser|Abwasser|Müll`) | provider | vertrag_no | meter_ref(s) | current_abschlag (€/Mon) | last_jahresabrechnung_period | next_jahresabrechnung_due | price_history_ref |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -158,6 +180,8 @@
 <!-- /auto:utilities -->
 
 ### 6.3 Behörden
+<!-- auto:authorities.summary -->_no issue_<!-- /auto:authorities.summary -->
+
 <!-- auto:authorities -->
 | behörde | zuständigkeit | ansprechpartner | last_contact | open_request | compliance_doc_required |
 | --- | --- | --- | --- | --- | --- |
@@ -169,6 +193,8 @@
 ---
 
 ## 7. Policies (defaults & rules)
+<!-- auto:policies.summary -->_no issue_<!-- /auto:policies.summary -->
+
 <!-- auto:policies -->
 - mahngebuehren: { stage_1: €5, stage_2: €10 }
 - verzugszinssatz: { basiszinssatz: `<pct>` (Bundesbank, refreshed `<date>`), plus 5pp (§ 288 I BGB) }
@@ -185,24 +211,32 @@
 ## 8. Decisions & History (property-wide)
 
 ### 8.1 WEG-Beschlüsse — Decided
+<!-- auto:weg-decisions.summary -->_no issue_<!-- /auto:weg-decisions.summary -->
+
 <!-- auto:weg-decisions -->
 | date | beschluss-no | topic | status (`umgesetzt|offen|angefochten`) | one-line summary | protocol_ref |
 | --- | --- | --- | --- | --- | --- |
 <!-- /auto:weg-decisions -->
 
 ### 8.2 WEG-Agenda Backlog (proposed for next ETV)
+<!-- auto:weg-agenda-backlog.summary -->_no issue_<!-- /auto:weg-agenda-backlog.summary -->
+
 <!-- auto:weg-agenda-backlog -->
 | proposed_at | proposed_by (owner_id) | topic | status (`pending|on_next_agenda|withdrawn|decided`) | doc_ref |
 | --- | --- | --- | --- | --- |
 <!-- /auto:weg-agenda-backlog -->
 
 ### 8.3 Einspruch-Log (per Beschluss)
+<!-- auto:weg-einsprueche.summary -->_no issue_<!-- /auto:weg-einsprueche.summary -->
+
 <!-- auto:weg-einsprueche -->
 | beschluss-no | einspruch_by (owner_id) | date | reason (one-line) | status (`offen|zurückgezogen|gerichtlich`) |
 | --- | --- | --- | --- | --- |
 <!-- /auto:weg-einsprueche -->
 
 ### 8.4 Modernisierungs-Maßnahmen (property-wide)
+<!-- auto:modernization.summary -->_no issue_<!-- /auto:modernization.summary -->
+
 <!-- auto:modernization -->
 | date_completed | scope | total_cost | umlage_per_year | affected_units | rent_increase | opt-outs |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -211,6 +245,8 @@
 ### 8.5 Cross-Unit Patterns (auto-detected via aggregation)
 > Patterns spanning multiple units, surfaced by the Property Aggregator. LLM-detected.
 > Trigger: nightly batch + on-demand when N+1 same-type events accumulate (default: 3 in 90d).
+
+<!-- auto:cross-unit-patterns.summary -->_no issue_<!-- /auto:cross-unit-patterns.summary -->
 
 <!-- auto:cross-unit-patterns -->
 | pattern_type | involved_units | incident_count | first_seen | last_seen | trigger_action_suggested | confidence |
@@ -223,6 +259,8 @@
 ---
 
 ## 9. Provenance & Source Index
+<!-- auto:provenance.summary -->_no issue_<!-- /auto:provenance.summary -->
+
 <!-- auto:provenance -->
 | source-id | type (`stammdaten|bank|brief|email|rechnung|weg-protocol|external`) | path | last_seen |
 | --- | --- | --- | --- |

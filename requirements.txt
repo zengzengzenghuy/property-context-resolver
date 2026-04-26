@@ -5,3 +5,4 @@ pypdf>=4.0                # optional — backup PDF text extractor
 supabase>=2.0             # mirrors the rendered context.md to the shared data layer
 python-dotenv>=1.0        # loads SUPABASE_* and ANTHROPIC_API_KEY from .env
 anthropic>=0.96           # LLM summarizer for the Signal-First context.md auto-blocks
+google-generativeai>=0.8.3  # Gemini LLM summarizer alternative

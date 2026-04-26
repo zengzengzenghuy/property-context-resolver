@@ -5,7 +5,7 @@
 > **Property-wide data lives in `context.property.md`** — see `parent_property_ref` below.
 
 <!-- auto:meta -->
-- last_built_at: `2026-04-25T20:52:51+00:00`
+- last_built_at: `2026-04-26T09:36:40+00:00`
 - build_hash: `engine-v2`
 - engine_version: `0.2.0`
 - schema_version: `spine-v2-split` (2026-04-25)
@@ -19,6 +19,8 @@
 ---
 
 ## 1. Unit
+<!-- auto:unit.summary -->[Administrative] Einheit WE 32 (EH-032, 1,5 Zimmer, 48 qm, 5. OG) — Kündigungskommunikation vom 2025-10-27 dokumentiert [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#einheit/EH-032); letzte Mietzahlung (901,00 EUR) eingegangen 2025-12-03 [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-00006). Untervermietungsantrag vom 2024-12-22 noch im Status "requested" — vor Kündigungsprozess klären, ob Antrag zurückgezogen oder still besteht. Kündigungsbearbeitung und Status der Untervermietung erforderlich.<!-- /auto:unit.summary -->
+
 <!-- auto:unit -->
 - unit_id: `EH-032`
 - label: WE 32
@@ -40,6 +42,8 @@
 ---
 
 ## 2. Lease (Mietverhältnis, voll)
+<!-- auto:lease.summary -->[Administrative] Mieter MIE-016 (Magrit Mitschke, EH-032) hat den Mietvertrag dreifach eingereicht — 25.10.2025, 30.10.2025 und 31.12.2025 [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251231_163500_EMAIL-06543.eml) — jeweils mit Bitte um schriftliche Bestätigung des Kündigungstermins. Kündigungsfrist beträgt drei Monate zum Ende eines Kalendermonats (§ 573 Abs. 1 BGB); bei Zugang 25.10.2025 wäre Kündigungsstichtag 31.01.2026 gewesen, bei Zugang 31.12.2025 ist es 31.03.2026. Handlungserfordernis: Kündigungsbestätigung ausstellen und Kaution (2.328,00 EUR) [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#mieter/MIE-016) gem. § 549 BGB plus Abrechnung NK/Nebenkosten vorbereiten; Auszugstermin mit Übergabeprotokoll klären.<!-- /auto:lease.summary -->
+
 <!-- auto:lease -->
 - lease_id: `LEASE-MIE-016`
 - unit_ref: `EH-032`
@@ -57,6 +61,8 @@
 <!-- /auto:lease -->
 
 ### 2.1 Tenants on this Lease
+<!-- auto:tenants.summary -->_no issue_<!-- /auto:tenants.summary -->
+
 <!-- auto:tenants -->
 | tenant_id | name | role | contact_email | contact_phone | comms_pref | gesamtschuldner |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -68,6 +74,8 @@
 ## 3. Operations (this unit / this tenant)
 
 ### 3.1 Open Tickets — Critical (overdue or due ≤7 days)
+<!-- auto:tickets.critical.summary -->[Routine] Mieter EH-032 meldet Schluesselverlust am 2025-12-16 [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251216_111100_EMAIL-06411.eml). Dies ist eine Wiederholung desselben Vorfalls, der erstmals am 2025-09-01 gemeldet wurde [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-09/20250901_162000_EMAIL-05483.eml); Verwaltung bestätigte damals Handwerkerbeauftragung. Mietvertrag regelt Schliessanlage-Austausch als Vermieterobliegenheit bei nachgewiesener Schlüsselabgabe; gegenwärtiger Status der ersten Schlossermaßnahme unklar, Kündigungstermin 2025-11-23 bereits überschritten — Wohnungsübergabe erforderlich vor Auszug.<!-- /auto:tickets.critical.summary -->
+
 <!-- auto:tickets.critical -->
 | ticket_id | type | title | deadline | status | assignee |
 | --- | --- | --- | --- | --- | --- |
@@ -83,6 +91,8 @@
 <!-- /auto:tickets.critical -->
 
 ### 3.2 Open Tickets — Aggregate
+<!-- auto:tickets.aggregate.summary -->[Routine] Einheit EH-032: Schluesselverlust gemeldet 2025-12-16, Severity normal. Ticket dokumentiert seit Dezember 2025; Verfahren nach Hausordnung und Mietvertrag zu Schlüsselverwaltung prüfen. Handlungsfrist: Schlüsselverlust nach BGB § 537 III (Mieter haftet für Beschaffung Ersatzschlüssel bei Verschulden); Status und Abschluss des Tickets klären.<!-- /auto:tickets.aggregate.summary -->
+
 <!-- auto:tickets.aggregate -->
 - total_open: `23`
 - by_type: { abfluss: `1`, fenster: `7`, schimmel: `4`, schluessel: `6`, wasserschaden: `5` }
@@ -91,7 +101,7 @@
 
 ### 3.3 Active Mahnverfahren
 
-<!-- auto:dunning.summary -->[Routine] Mieter MIE-016 ist seit vier Monaten im Verzug; offener Betrag 3.604,00 EUR zzgl. 46,16 EUR Verzugszinsen, letzte Zahlung 2025-12-03 [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-01584). Vertraglich geschuldet sind monatlich 901,00 EUR (Kaltmiete 776,00 EUR + NK 125,00 EUR). Verzug nach § 286 BGB festgestellt, Verzugszinsen § 288 I BGB (Basiszins + 5pp); Mahnstufe 1, nächster Schritt: 2. Mahnung nach 14 Tagen.<!-- /auto:dunning.summary -->
+<!-- auto:dunning.summary -->[Routine] Mieter MIE-016 ist seit vier Monaten im Verzug; offener Betrag 3.604,00 EUR zzgl. 47,00 EUR Verzugszinsen, letzte Zahlung 2025-12-03 [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-01584). Vertraglich geschuldet sind monatlich 901,00 EUR (Kaltmiete 776,00 EUR + NK 125,00 EUR) [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#mieter/MIE-016). Verzug nach § 286 BGB festgestellt, Verzugszinsen § 288 I BGB; Mahnstufe 1 aktiv, nächster Schritt: 2. Mahnung fällig.<!-- /auto:dunning.summary -->
 
 #### Per claim
 <!-- auto:dunning -->
@@ -102,6 +112,8 @@
 <!-- /auto:dunning -->
 
 ### 3.4 Active Reductions / Deferrals (§ 536 BGB)
+<!-- auto:reductions.summary -->[Emergency] Mieter EH-032 (Mitschke) kündigt unilaterale Mietminderung um 15% ab 2026-01-20 an [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251221_135600_EMAIL-06459.eml); Grund: Wasserschaden und Schimmel seit über 3 Monaten unbehoben. Dies ist die zweite Ankündigung derselben Art (erste vom 2024-12-27 mit Effectivdatum 2025-01-26) [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-12/20241227_154000_EMAIL-03294.eml), was auf Nichtbehandlung durch die Verwaltung hindeutet. Rechtlich: § 536 BGB (Mietminderung wegen Mangelhaftigkeit); Verwaltung muss unverzüglich prüfen, ob Mangel vorliegt und ob Frist zur Behebung nach § 536 II BGB (Mahnung + angemessene Frist) eingehalten wurde; Minderung kann berechtigt sein, wenn Mangel erheblich und Behebungsfrist verstrichen ist — sofortige Schadensdokumentation und Reparaturauftrag erforderlich.<!-- /auto:reductions.summary -->
+
 <!-- auto:reductions -->
 - date_raised: 2024-12-27
 - amount_or_percent: —
@@ -117,9 +129,13 @@
 <!-- /auto:reductions -->
 
 ### 3.5 Latest Übergabeprotokoll
+<!-- auto:handover.summary -->_no issue_<!-- /auto:handover.summary -->
+
 <!-- auto:handover -->_(no data in source yet)_<!-- /auto:handover -->
 
 ### 3.6 Recurring Process State (this unit, in-flight)
+<!-- auto:recurring.summary -->[Administrative] Mieter MIE-016 (Magrit Mitschke) hat Kündigungsschreiben für Einheit EH-032 (WE 32) mehrfach eingereicht: 2024-08-07 [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-08/20240807_083400_EMAIL-01985.eml), 2025-10-25, 2025-10-30 und 2025-12-31 [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251231_163500_EMAIL-06543.eml), jeweils mit Bitte um schriftliche Bestätigung des Kündigungstermins. Letzte Kündigung erfasst am 2025-12-31; Bestätigungsschreiben erforderlich nach § 573 I BGB (Schriftform) mit Angabe des effektiven Beendigungstermins unter Beachtung der Kündigungsfrist (§ 573 I BGB, üblicherweise 3 Monate zum 15. oder Ende eines Kalendermonats). Dokumentation der Kündigungsbewilligung und des Termins erforderlich zur Vermeidung von Rechtsstreit.<!-- /auto:recurring.summary -->
+
 <!-- auto:recurring -->
 | process_type | started | current_step | owner | eta | blockers |
 | --- | --- | --- | --- | --- | --- |
@@ -127,6 +143,8 @@
 <!-- /auto:recurring -->
 
 ### 3.7 Vermietungs-Pipeline *(if vacant)*
+<!-- auto:vermietung.summary -->_no issue_<!-- /auto:vermietung.summary -->
+
 <!-- auto:vermietung -->_Not yet activated. Triggers when occupancy_status flips to vacant after move-out._<!-- /auto:vermietung -->
 
 ---
@@ -134,6 +152,8 @@
 ## 4. Decisions & History (this unit / this tenant)
 
 ### 4.1 Tenant Special Agreements
+<!-- auto:tenant-agreements.summary -->_no issue_<!-- /auto:tenant-agreements.summary -->
+
 <!-- auto:tenant-agreements -->
 | date | type | one-line | doc_ref |
 | --- | --- | --- | --- |
@@ -141,6 +161,8 @@ _(no data in source yet)_
 <!-- /auto:tenant-agreements -->
 
 ### 4.2 Modernisierungs-Maßnahmen (this unit)
+<!-- auto:modernization-unit.summary -->_no issue_<!-- /auto:modernization-unit.summary -->
+
 <!-- auto:modernization-unit -->
 | date_completed | scope | umlage_per_year | rent_increase_per_month | tenant_opted_out |
 | --- | --- | --- | --- | --- |
@@ -148,6 +170,8 @@ _(no data in source yet)_
 <!-- /auto:modernization-unit -->
 
 ### 4.3 Sticky Communication Threads (this tenant)
+<!-- auto:sticky-threads.summary -->[Routine] Mieter MIE-016 meldet Ruhestörung durch Lärmbelästigung (Musik, Feiern bis nach Mitternacht) aus überlagernder Wohnung seit mehreren Wochen; 115 Meldungen im Thread seit 2024-01-09, letzte Meldung 2025-12-31 [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251231_113700_EMAIL-06541.eml). Lärmbelästigung verstößt gegen Hausordnung (Ruhezeiten) und § 906 BGB (Störung des Nachbarrechts); Beschwerde berechtigt, Beseitigung geschuldete Pflicht des Vermieters gegenüber dem beschwerten Mieter. Erforderlich: Prüfung des Sachverhalts bei Störmittler, ggf. Verwarnung bzw. Abmahnung nach Hausordnung innerhalb 14 Tagen.<!-- /auto:sticky-threads.summary -->
+
 <!-- auto:sticky-threads -->
 | thread_id | subject | last_msg_date | parties | status | one-line outcome | pointer |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -157,10 +181,12 @@ _(no data in source yet)_
 ---
 
 ## 5. Provenance & Source Index (this unit/tenant)
+<!-- auto:provenance.summary -->[Routine] Mieter MIE-016 (Magrit Mitschke, EH-032, WE 32) ist seit vier Monaten im Verzug; offener Betrag 3.604,00 EUR zzgl. 47,00 EUR Verzugszinsen, letzte Zahlung 2025-12-03 [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-00006). Vertraglich geschuldet sind monatlich 901,00 EUR (Kaltmiete 776,00 EUR + NK 125,00 EUR) [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#mieter/MIE-016); Verzug nach § 286 BGB festgestellt, Verzugszinsen nach § 288 I BGB (Basiszins 3,5 % + 5 pp). Kündigungsmitteilung durch Mieter 2025-12-31 erhalten, gleichzeitig Ruhestörungsbeschwerde (115 Meldungen seit 2024-01-09) und unilaterale Mietreduktion wegen ungelöster Reparaturen ab 2025-12-21; Mahnstufe 1, nächster Schritt: 2. Mahnung nach 14 Tagen oder Kündigungsfrist § 573 BGB prüfen.<!-- /auto:provenance.summary -->
+
 <!-- auto:provenance -->
 | source-id | type | path | last_seen |
 | --- | --- | --- | --- |
-| `kontoauszug_2024_2025-csv` | bank | [bank/kontoauszug_2024_2025.csv](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv) | 2026-04-25 |
+| `kontoauszug_2024_2025-csv` | bank | [bank/kontoauszug_2024_2025.csv](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv) | 2026-04-26 |
 | `20240103_085700_EMAIL-00013-eml` | email | [emails/2024-01/20240103_085700_EMAIL-00013.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-01/20240103_085700_EMAIL-00013.eml) | 2024-01-03T08:57:00+00:00 |
 | `20240112_113900_EMAIL-00097-eml` | email | [emails/2024-01/20240112_113900_EMAIL-00097.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-01/20240112_113900_EMAIL-00097.eml) | 2024-01-12T11:39:00+00:00 |
 | `20240113_143900_EMAIL-00109-eml` | email | [emails/2024-01/20240113_143900_EMAIL-00109.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-01/20240113_143900_EMAIL-00109.eml) | 2024-01-13T14:39:00+00:00 |
@@ -240,7 +266,7 @@ _(no data in source yet)_
 | `20251229_173700_EMAIL-06520-eml` | email | [emails/2025-12/20251229_173700_EMAIL-06520.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251229_173700_EMAIL-06520.eml) | 2025-12-29T17:37:00+00:00 |
 | `20251231_113700_EMAIL-06541-eml` | email | [emails/2025-12/20251231_113700_EMAIL-06541.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251231_113700_EMAIL-06541.eml) | 2025-12-31 |
 | `20251231_163500_EMAIL-06543-eml` | email | [emails/2025-12/20251231_163500_EMAIL-06543.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251231_163500_EMAIL-06543.eml) | 2025-12-31T16:35:00+00:00 |
-| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-25T20:52:09+00:00 |
+| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-26T09:26:19+00:00 |
 <!-- /auto:provenance -->
 
 ---

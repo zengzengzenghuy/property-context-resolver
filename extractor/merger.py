@@ -118,6 +118,26 @@ class _BaseMerger:
         }
 
 
+_UTILITY_BRANCHEN = {"Stromversorger", "Gasversorger", "Wasserversorger", "Müllentsorgung"}
+
+
+def _dienstleister_split(store: FactStore) -> tuple[set[str], set[str]]:
+    """Partition dienstleister IDs into (utilities, non-utilities) by `branche`."""
+    util: set[str] = set()
+    other: set[str] = set()
+    for fact in store.all_facts():
+        if fact.entity_type != "dienstleister" or not fact.entity_id:
+            continue
+        if fact.entity_id in util or fact.entity_id in other:
+            continue
+        bf = store.latest(fact.entity_id, "branche")
+        if bf and bf.value in _UTILITY_BRANCHEN:
+            util.add(fact.entity_id)
+        else:
+            other.add(fact.entity_id)
+    return util, other
+
+
 class PropertyMerger(_BaseMerger):
     """Renders `context.property.<id>.md` from the schema template."""
 
@@ -128,7 +148,10 @@ class PropertyMerger(_BaseMerger):
         property_id: str,
         repo_root: Path,
         flagship_unit: Optional[str] = None,
+        raw_root: Optional[Path] = None,
+        today: Optional[str] = None,
     ) -> "PropertyMerger":
+        util_ids, nonutil_ids = _dienstleister_split(store)
         return cls(
             fact_store=store,
             template_path=repo_root / "context.property.template.md",
@@ -137,6 +160,10 @@ class PropertyMerger(_BaseMerger):
             ctx={
                 "property_id": property_id,
                 "flagship_unit": flagship_unit,
+                "raw_root": str(raw_root) if raw_root else None,
+                "today": today,
+                "utility_dl_ids": util_ids,
+                "nonutility_dl_ids": nonutil_ids,
             },
         )
 
@@ -152,6 +179,7 @@ class UnitMerger(_BaseMerger):
         repo_root: Path,
         property_id: str = "LIE-001",
         today: Optional[str] = None,
+        raw_root: Optional[Path] = None,
     ) -> "UnitMerger":
         # Tenants on this unit (resolves once per render).
         tenant_ids: list[str] = []
@@ -171,6 +199,7 @@ class UnitMerger(_BaseMerger):
                 "property_id": property_id,
                 "tenant_ids": tenant_ids,
                 "today": today,
+                "raw_root": str(raw_root) if raw_root else None,
             },
         )
 

@@ -5,7 +5,7 @@
 > **Property-wide data lives in `context.property.md`** — see `parent_property_ref` below.
 
 <!-- auto:meta -->
-- last_built_at: `2026-04-25T20:52:19+00:00`
+- last_built_at: `2026-04-26T09:26:37+00:00`
 - build_hash: `engine-v2`
 - engine_version: `0.2.0`
 - schema_version: `spine-v2-split` (2026-04-25)
@@ -19,6 +19,8 @@
 ---
 
 ## 1. Unit
+<!-- auto:unit.summary -->[Administrative] Einheit EH-001 (WE 01, 4-Zimmer-Wohnung, 103 qm, 1. OG links, Miteigentumsanteil 241/10000) zeigt Zahlungseingang vom 2025-12-05: 32,73 EUR Hausgeld für 12/2025 von Osman Jacob [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-00043), mit Verwendungszweck „Hausgeld 12/2025 EH-001,EH-030" [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#einheit/EH-001). Verkaufsabsicht dokumentiert 2024-08-24; aktuelle Eigentümerschaft und Hausgeldschuldner-Identität sind zu verifizieren (Abweichung: Zahler „Osman Jacob" vs. Eigentümer in Stammdaten unklar).<!-- /auto:unit.summary -->
+
 <!-- auto:unit -->
 - unit_id: `EH-001`
 - label: WE 01
@@ -40,9 +42,13 @@
 ---
 
 ## 2. Lease (Mietverhältnis, voll)
+<!-- auto:lease.summary -->_no issue_<!-- /auto:lease.summary -->
+
 <!-- auto:lease -->_(no data in source yet)_<!-- /auto:lease -->
 
 ### 2.1 Tenants on this Lease
+<!-- auto:tenants.summary -->_no issue_<!-- /auto:tenants.summary -->
+
 <!-- auto:tenants -->
 | tenant_id | name | role | contact_email | contact_phone | comms_pref | gesamtschuldner |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -54,6 +60,8 @@ _(no data in source yet)_
 ## 3. Operations (this unit / this tenant)
 
 ### 3.1 Open Tickets — Critical (overdue or due ≤7 days)
+<!-- auto:tickets.critical.summary -->[Routine] Mieter EH-001 meldet am 2024-03-06 einen vollständig verstopften Abfluss in der Dusche; Eigenversuch mit Pömpel erfolglos [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-03/20240306_161700_EMAIL-00566.eml). Abflussreinigung ist Instandhaltungspflicht des Vermieters nach § 535 II BGB (Instandhaltung der Mietsache). Ticket geöffnet 2024-03-06, Reaktionsfrist gemäß Hausordnung/Servicevertrag prüfen; Reparaturtermin mit qualifiziertem Handwerker einleiten.<!-- /auto:tickets.critical.summary -->
+
 <!-- auto:tickets.critical -->
 | ticket_id | type | title | deadline | status | assignee |
 | --- | --- | --- | --- | --- | --- |
@@ -61,6 +69,8 @@ _(no data in source yet)_
 <!-- /auto:tickets.critical -->
 
 ### 3.2 Open Tickets — Aggregate
+<!-- auto:tickets.aggregate.summary -->[Routine] Einheit EH-001: Verstopfter Abfluss gemeldet 2024-03-06 [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-03/20240306_161700_EMAIL-00566.eml). Abflussbeseitigung fällt unter Instandhaltungspflicht des Vermieters (§ 535 I BGB). Ticket ist zwei Jahre alt — Verarbeitung oder Abschluss erforderlich.<!-- /auto:tickets.aggregate.summary -->
+
 <!-- auto:tickets.aggregate -->
 - total_open: `1`
 - by_type: { abfluss: `1` }
@@ -80,12 +90,18 @@ _(no data in source yet)_
 <!-- /auto:dunning -->
 
 ### 3.4 Active Reductions / Deferrals (§ 536 BGB)
+<!-- auto:reductions.summary -->_no issue_<!-- /auto:reductions.summary -->
+
 <!-- auto:reductions -->_(no data in source yet)_<!-- /auto:reductions -->
 
 ### 3.5 Latest Übergabeprotokoll
+<!-- auto:handover.summary -->_no issue_<!-- /auto:handover.summary -->
+
 <!-- auto:handover -->_(no data in source yet)_<!-- /auto:handover -->
 
 ### 3.6 Recurring Process State (this unit, in-flight)
+<!-- auto:recurring.summary -->_no issue_<!-- /auto:recurring.summary -->
+
 <!-- auto:recurring -->
 | process_type | started | current_step | owner | eta | blockers |
 | --- | --- | --- | --- | --- | --- |
@@ -93,6 +109,8 @@ _(no data in source yet)_
 <!-- /auto:recurring -->
 
 ### 3.7 Vermietungs-Pipeline *(if vacant)*
+<!-- auto:vermietung.summary -->_no issue_<!-- /auto:vermietung.summary -->
+
 <!-- auto:vermietung -->_Not yet activated. Triggers when occupancy_status flips to vacant after move-out._<!-- /auto:vermietung -->
 
 ---
@@ -100,6 +118,8 @@ _(no data in source yet)_
 ## 4. Decisions & History (this unit / this tenant)
 
 ### 4.1 Tenant Special Agreements
+<!-- auto:tenant-agreements.summary -->_no issue_<!-- /auto:tenant-agreements.summary -->
+
 <!-- auto:tenant-agreements -->
 | date | type | one-line | doc_ref |
 | --- | --- | --- | --- |
@@ -107,6 +127,8 @@ _(no data in source yet)_
 <!-- /auto:tenant-agreements -->
 
 ### 4.2 Modernisierungs-Maßnahmen (this unit)
+<!-- auto:modernization-unit.summary -->_no issue_<!-- /auto:modernization-unit.summary -->
+
 <!-- auto:modernization-unit -->
 | date_completed | scope | umlage_per_year | rent_increase_per_month | tenant_opted_out |
 | --- | --- | --- | --- | --- |
@@ -114,6 +136,8 @@ _(no data in source yet)_
 <!-- /auto:modernization-unit -->
 
 ### 4.3 Sticky Communication Threads (this tenant)
+<!-- auto:sticky-threads.summary -->[Routine] Mieterwechsel WE 01: Kündigung des Mieters zum 31.12.2025 mitgeteilt (2025-12-15), Wohnungsfreigabe ab 2026-02-18 geplant [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251215_103000_EMAIL-06400.eml). Thread seit 2024-01-30 aktiv (5 Nachrichten), ursprünglich gekoppelt mit Verkaufsabsicht des Eigentümers. Übergabeprotokoll und Vermarktung nach § 546 BGB (Übergabe bei Mietbeendigung) zu koordinieren; Vermarktungsstart empfohlen für Januar 2026, um Vermietungslücke zu minimieren.<!-- /auto:sticky-threads.summary -->
+
 <!-- auto:sticky-threads -->
 | thread_id | subject | last_msg_date | parties | status | one-line outcome | pointer |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -124,6 +148,8 @@ _(no data in source yet)_
 ---
 
 ## 5. Provenance & Source Index (this unit/tenant)
+<!-- auto:provenance.summary -->_no issue_<!-- /auto:provenance.summary -->
+
 <!-- auto:provenance -->
 | source-id | type | path | last_seen |
 | --- | --- | --- | --- |
@@ -133,7 +159,7 @@ _(no data in source yet)_
 | `20240306_161700_EMAIL-00566-eml` | email | [emails/2024-03/20240306_161700_EMAIL-00566.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-03/20240306_161700_EMAIL-00566.eml) | 2024-03-06T16:17:00+00:00 |
 | `20240824_184100_EMAIL-02144-eml` | email | [emails/2024-08/20240824_184100_EMAIL-02144.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-08/20240824_184100_EMAIL-02144.eml) | 2024-08-24T18:41:00+00:00 |
 | `20251215_103000_EMAIL-06400-eml` | email | [emails/2025-12/20251215_103000_EMAIL-06400.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251215_103000_EMAIL-06400.eml) | 2025-12-15 |
-| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-25T20:52:09+00:00 |
+| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-26T09:26:19+00:00 |
 <!-- /auto:provenance -->
 
 ---

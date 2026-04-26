@@ -138,6 +138,8 @@ def main(argv: list[str] | None = None) -> int:
         property_id=PROPERTY_ID,
         repo_root=repo_root,
         flagship_unit=FLAGSHIP_UNIT_FOR_INDEX,
+        raw_root=raw_root,
+        today=today,
     )
     property_text, property_stats = property_merger.render_to_file()
 
@@ -150,7 +152,7 @@ def main(argv: list[str] | None = None) -> int:
     for uid in unit_ids:
         unit_merger = UnitMerger.for_unit(
             store=store, unit_id=uid, repo_root=repo_root, property_id=PROPERTY_ID,
-            today=today,
+            today=today, raw_root=raw_root,
         )
         text, stats = unit_merger.render_to_file()
         rendered_units.append((uid, text))

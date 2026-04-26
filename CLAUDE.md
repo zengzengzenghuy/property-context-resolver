@@ -58,6 +58,11 @@ extractor/                   the engine
   extract.py                 fan-out across source connectors
   engine.py                  typed pipeline classes (Sprint.md skeleton)
   cli.py                     `python -m extractor.cli ingest` (alt entrypoint)
+  blocks.py                  per-block render fns + PROPERTY_BLOCKS / UNIT_BLOCKS registries
+  merger.py                  PropertyMerger / UnitMerger — surgical replace inside auto-blocks
+  summarizer.py              Anthropic wrapper for `<!-- auto:*.summary -->` blocks
+  section_summary.py         generic `make_section_summary(filter, include_raw=...)` factory
+  raw_loader.py              source_ref → local file → bounded excerpt (.eml / .pdf.txt / bank rows / stammdaten#frag)
   sources/
     stammdaten.py            JSON/CSV master data → baseline facts
     bank.py                  CSV rows → payment events
@@ -80,7 +85,7 @@ out/                         pipeline outputs (gitignored or versioned by you)
 | 4 | FactExtractor     | 🟢 partial | Rule-based for all sources; LLM enrichment slot empty |
 | 5 | FactStore         | ✅ done  | Bucketed `(entity_id, key)` index, append-only dedup, conflict detection at confidence floor 0.7, `latest()` with full priority tie-break, JSONL round-trip with id-based dedup. 23 unit tests. |
 | 6 | Merger            | ❌ stub  | One-line placeholder. **`format_value()` helper is built and tested**; rendering plumbing waits on Karl's section schema. |
-| 7 | Summarizer        | 🟢 partial | `extractor/summarizer.py` — Claude wrapper for `<!-- auto:*.summary -->` blocks. Signal-First philosophy in the system prompt, file-cached at `out/llm_cache/summary.json`, no-ops gracefully without `ANTHROPIC_API_KEY`. Wired for unit `dunning.summary`; other blocks pending. |
+| 7 | Summarizer        | ✅ done  | `extractor/summarizer.py` — Claude wrapper for `<!-- auto:*.summary -->` blocks. Signal-First philosophy in the system prompt, file-cached at `out/llm_cache/summary.json`, no-ops gracefully without `ANTHROPIC_API_KEY`. **Every section in both templates carries a `<section>.summary` block** (e.g. `lease.summary`, `tickets.critical.summary`, `provenance.summary`). `dunning.summary` keeps its bespoke renderer; the rest are built via `extractor/section_summary.py::make_section_summary` which packages filtered facts + bounded raw excerpts (read by `raw_loader.py`) into the LLM payload. Cache invalidates automatically when raw content changes (SHA256 over the full payload). |
 
 ## Conventions and gotchas
 
@@ -184,6 +189,19 @@ Output is cached at `out/llm_cache/summary.json` keyed by SHA256 of (model,
 system prompt, payload), so re-runs on unchanged data make zero API calls
 and produce byte-identical output. Cache dir is gitignored.
 
+**Per-section summaries inline raw content.** Every section in both templates
+has a `<!-- auto:<section>.summary -->` block. The generic factory
+`extractor/section_summary.py::make_section_summary(fact_filter, include_raw=...)`
+builds the renderer; when `include_raw=True` it loads bounded excerpts of the
+emails / `.pdf.txt` / bank rows / stammdaten fragments cited by the section's
+facts (via `raw_loader.gather_excerpts`) and includes them in the LLM payload.
+This is what gives the summary actual content (vs. just facts + URLs). Cache
+invalidation is automatic — the SHA256 of the payload changes when raw
+content changes, so adding files in `raw/` re-summarizes only the affected
+sections. Sections with no relevant facts emit `_no issue_` deterministically
+and never call the LLM. The merger plumbs `raw_root` through `ctx` so the
+filter helpers can locate raw files; `run.py` already passes it.
+
 **The merger only scaffolds new auto-blocks into a fresh file.** If
 `context.unit.<id>.md` already exists with auto-blocks, `_replace_blocks`
 will only update bodies of blocks that already appear in the file — newly
@@ -212,8 +230,40 @@ matching individual labels — see the column-layout note above.
 
 ## Adding a new summary block
 
-Pattern lives in `extractor/blocks.py` — see `_dunning_signal()` +
-`render_dunning_summary()` as the reference implementation.
+Two paths. Pick the generic factory unless the section needs the heavily
+curated Trifecta payload that `dunning.summary` uses.
+
+### Generic (preferred)
+
+In `extractor/blocks.py`:
+
+```python
+render_my_summary = make_section_summary(
+    "my-section",
+    fact_filter=lambda f, ctx: f.entity_id == ctx["unit_id"] and f.key.startswith("my_section."),
+    include_raw=True,            # set True if you want raw email/letter bodies in the payload
+    max_raw_files=10,            # cap so payloads stay small
+)
+```
+
+Then:
+
+1. Add `"my-section.summary": render_my_summary` to `PROPERTY_BLOCKS` or `UNIT_BLOCKS`.
+2. Add `<!-- auto:my-section.summary -->_no issue_<!-- /auto:my-section.summary -->`
+   to the matching template, right after the section heading.
+3. Delete affected `context.unit.*.md` / `context.property.*.md` (merger gotcha
+   above) and re-run `python run.py raw/ --today YYYY-MM-DD`.
+
+The factory handles: empty-signal → `_no issue_`, deterministic fallback when
+the LLM is unavailable, raw excerpt loading via `raw_loader.gather_excerpts`,
+references from `source_ref`. The `fact_filter` runs over `store.all_facts()`
+so don't do anything expensive in it; precompute lookups in `ctx` from the
+merger if needed (see `utility_dl_ids` / `nonutility_dl_ids` in `merger.py`).
+
+### Bespoke (for heavily curated Trifecta payloads)
+
+`render_dunning_summary` is the reference. Use this when the section needs a
+hand-shaped payload (issue / contract / law / timeline projection):
 
 1. Write a `_<section>_signal(store, ...)` helper that pulls *only* the salient
    facts (anomalies, conflicts, items with deadlines) into a small JSON dict.
@@ -225,12 +275,7 @@ Pattern lives in `extractor/blocks.py` — see `_dunning_signal()` +
    - returns `"_no issue_"` immediately if the signal is empty,
    - constructs a deterministic `fallback` string (used when LLM unavailable),
    - calls `(ctx.get("summarizer") or get_summarizer()).summarize(...)`.
-4. Register in `PROPERTY_BLOCKS` or `UNIT_BLOCKS` with the auto-block name
-   (use a dotted name like `<section>.summary`).
-5. Add `<!-- auto:<name> -->_no issue_<!-- /auto:<name> -->` to the matching
-   template (`context.property.template.md` / `context.unit.template.md`).
-6. Delete affected rendered files (see merger gotcha) and re-run
-   `python run.py raw/ --today YYYY-MM-DD` so `today` reaches the LLM.
+4. Register + template steps as above.
 
 ## Adding tests
 

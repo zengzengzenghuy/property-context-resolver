@@ -7,7 +7,7 @@
 > Manual edits outside `<!-- auto:* -->` blocks are preserved by the engine.
 
 <!-- auto:meta -->
-- last_built_at: `2026-04-25T20:52:19+00:00`
+- last_built_at: `2026-04-26T09:26:29+00:00`
 - build_hash: `engine-v2`
 - engine_version: `0.2.0`
 - schema_version: `spine-v2-split` (2026-04-25)
@@ -17,6 +17,8 @@
 ---
 
 ## 1. Property
+<!-- auto:property.summary -->_no issue_<!-- /auto:property.summary -->
+
 <!-- auto:property -->
 - property_id: `LIE-001`
 - address: Immanuelkirchstraße 26, 10405 Berlin
@@ -32,6 +34,8 @@
 <!-- /auto:property -->
 
 ### 1.1 Owner(s)
+<!-- auto:owners.summary -->_no issue_<!-- /auto:owners.summary -->
+
 <!-- auto:owners -->
 | owner_id | name | share_‰ (MEA) | unit_refs | contact | reporting_pref | sale_intent | beirat |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -74,6 +78,8 @@
 *`sale_intent`: `none | considering | listed | under_contract`; if ≠ none → `{ since, requested_docs[] }` in footnote.*
 
 ### 1.2 Verwaltermandat
+<!-- auto:mandate.summary -->_no issue_<!-- /auto:mandate.summary -->
+
 <!-- auto:mandate -->
 - manager: Huber & Partner Immobilienverwaltung GmbH [(source)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#liegenschaft/LIE-001)
 - contact_email: info@huber-partner-verwaltung.de [(source)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#liegenschaft/LIE-001)
@@ -88,6 +94,8 @@
 
 ## 2. Units Index
 > Roster only. Detail lives in per-unit files.
+
+<!-- auto:units-index.summary -->_no issue_<!-- /auto:units-index.summary -->
 
 <!-- auto:units-index -->
 | unit_id | label | haus_id | floor | sqm | rooms | typ | mea_‰ | occupancy | owner_ref | unit_md_ref |
@@ -149,6 +157,8 @@
 ---
 
 ## 3. Compliance Calendar (property-wide)
+<!-- auto:compliance.summary -->_no issue_<!-- /auto:compliance.summary -->
+
 <!-- auto:compliance -->
 | obligation | last_done | next_due | vendor_ref | status | evidence_doc_ref |
 | --- | --- | --- | --- | --- | --- |
@@ -160,6 +170,8 @@ _(no data in source yet)_
 ## 4. Vendor Operations (property-wide)
 
 ### 4.1 Open Vendor Quotes
+<!-- auto:vendor-quotes.summary -->_no issue_<!-- /auto:vendor-quotes.summary -->
+
 <!-- auto:vendor-quotes -->
 | vendor_ref | scope | amount | valid_until | decision | doc_ref |
 | --- | --- | --- | --- | --- | --- |
@@ -167,6 +179,8 @@ _(no data in source yet)_
 <!-- /auto:vendor-quotes -->
 
 ### 4.2 Vendor Dunning AGAINST US (Mahnungen, die wir bekommen)
+<!-- auto:vendor-dunning.summary -->_no issue_<!-- /auto:vendor-dunning.summary -->
+
 <!-- auto:vendor-dunning -->
 | vendor_ref | invoice_no | amount | stage | since | deadline | reason |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -174,6 +188,8 @@ _(no data in source yet)_
 <!-- /auto:vendor-dunning -->
 
 ### 4.3 Recurring Property Processes (in-flight, property-wide)
+<!-- auto:recurring-property.summary -->[Routine] Portoflio-weite Kündigungswelle: 27 Einheiten durch Mieter gekündigt zwischen 2024-04-19 (EH-049) und 2025-12-31 (EH-032), davon 18 Kündigungen seit Oktober 2025 [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-10/20251025_115500_EMAIL-05964.eml). Jede Kündigung unterliegt § 573 I BGB (ordentliche Kündigung mit Frist) oder Mietvertrag-Sonderfristen; Kündigungsfrist beträgt regelmäßig drei Monate zum Ende eines Kalendermonats. Eskalation ab Oktober 2025 deutet auf systemische Situation hin (Marktlage, Immissionen, Management-Problem) — Ursachenanalyse und Exit-Management erforderlich.<!-- /auto:recurring-property.summary -->
+
 <!-- auto:recurring-property -->
 | process_type | started | current_step | owner | eta | blockers |
 | --- | --- | --- | --- | --- | --- |
@@ -208,6 +224,8 @@ _(no data in source yet)_
 ---
 
 ## 5. Financials (snapshot, last build)
+<!-- auto:financials.summary -->_no issue_<!-- /auto:financials.summary -->
+
 <!-- auto:financials -->
 - last_nk_abrechnung: _(no data in source yet)_
 - last_hausgeld_abrechnung: _(no data in source yet)_
@@ -229,7 +247,7 @@ _(no data in source yet)_
 - active_mieterwechsel_in_flight: { count: `26`, units: ['EH-002', 'EH-003', 'EH-006', 'EH-009', 'EH-013', 'EH-016', 'EH-019', 'EH-021', 'EH-022', 'EH-025', 'EH-028', 'EH-029', 'EH-031', 'EH-032', 'EH-034', 'EH-035', 'EH-036', 'EH-037', 'EH-039', 'EH-041', 'EH-042', 'EH-045', 'EH-046', 'EH-049', 'EH-050', 'EH-051'] }
 - critical_tickets_total: `263`
 - vendor_open_balance_against_us_total: `0.00 EUR`
-- last_aggregated_at: `2026-04-25T20:52:19+00:00`
+- last_aggregated_at: `2026-04-26T09:26:33+00:00`
 <!-- /auto:operations-summary -->
 
 ---
@@ -237,6 +255,8 @@ _(no data in source yet)_
 ## 6. Stakeholders
 
 ### 6.1 Service-Vendors & Versicherungen
+<!-- auto:stakeholders.summary -->[Administrative] Acht Dienstleister in Stammdaten erfasst [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#dienstleister/DL-001): DL-001 Hausmeister Mueller (650,00 EUR/Mo.), DL-002 Aufzug Schindler (185,00 EUR/Mo.), DL-003 Heiztechnik Berlin (0,00 EUR/Mo., Stundensatz 78,00 EUR), DL-004 Reinigungsservice Kowalski sowie fünf weitere. Alle Kontaktdaten, Bankverbindungen, USt-IDs und Steuernummern vollständig dokumentiert. Keine Abweichung zwischen Vertragssätzen und Stammdaten erkannt.<!-- /auto:stakeholders.summary -->
+
 <!-- auto:stakeholders -->
 | role | name | contact | vertragstyp | next_service_due | last_invoice (date/amount) | open_balance_against_us | id |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -259,6 +279,8 @@ _(no data in source yet)_
 <!-- /auto:stakeholders -->
 
 ### 6.2 Versorger (Strom, Gas, Wasser, Müll)
+<!-- auto:utilities.summary -->_no issue_<!-- /auto:utilities.summary -->
+
 <!-- auto:utilities -->
 | type | provider | vertrag_no | meter_ref(s) | current_abschlag (€/Mon) | last_jahresabrechnung_period | next_jahresabrechnung_due | id |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -266,6 +288,8 @@ _(no data in source yet)_
 <!-- /auto:utilities -->
 
 ### 6.3 Behörden
+<!-- auto:authorities.summary -->_no issue_<!-- /auto:authorities.summary -->
+
 <!-- auto:authorities -->
 | behörde | zuständigkeit | ansprechpartner | last_contact | open_request | compliance_doc_required |
 | --- | --- | --- | --- | --- | --- |
@@ -275,6 +299,8 @@ _(no data in source yet)_
 ---
 
 ## 7. Policies (defaults & rules)
+<!-- auto:policies.summary -->_no issue_<!-- /auto:policies.summary -->
+
 <!-- auto:policies -->
 - mahngebuehren: { stage_1: €5, stage_2: €10 }
 - verzugszinssatz: basiszinssatz + 5pp (§ 288 I BGB)
@@ -289,6 +315,8 @@ _(no data in source yet)_
 ## 8. Decisions & History (property-wide)
 
 ### 8.1 WEG-Beschlüsse — Decided
+<!-- auto:weg-decisions.summary -->_no issue_<!-- /auto:weg-decisions.summary -->
+
 <!-- auto:weg-decisions -->
 | date | beschluss-no | topic | status | one-line summary | protocol_ref |
 | --- | --- | --- | --- | --- | --- |
@@ -296,6 +324,8 @@ _(no data in source yet)_
 <!-- /auto:weg-decisions -->
 
 ### 8.2 WEG-Agenda Backlog (proposed for next ETV)
+<!-- auto:weg-agenda-backlog.summary -->_no issue_<!-- /auto:weg-agenda-backlog.summary -->
+
 <!-- auto:weg-agenda-backlog -->
 | proposed_at | proposed_by (owner_id) | topic | status | doc_ref |
 | --- | --- | --- | --- | --- |
@@ -303,6 +333,8 @@ _(no data in source yet)_
 <!-- /auto:weg-agenda-backlog -->
 
 ### 8.3 Einspruch-Log (per Beschluss)
+<!-- auto:weg-einsprueche.summary -->_no issue_<!-- /auto:weg-einsprueche.summary -->
+
 <!-- auto:weg-einsprueche -->
 | beschluss-no | einspruch_by (owner_id) | date | reason (one-line) | status |
 | --- | --- | --- | --- | --- |
@@ -310,6 +342,8 @@ _(no data in source yet)_
 <!-- /auto:weg-einsprueche -->
 
 ### 8.4 Modernisierungs-Maßnahmen (property-wide)
+<!-- auto:modernization.summary -->_no issue_<!-- /auto:modernization.summary -->
+
 <!-- auto:modernization -->
 | date_completed | scope | total_cost | umlage_per_year | affected_units | rent_increase | opt-outs |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -319,6 +353,8 @@ _(no data in source yet)_
 ### 8.5 Cross-Unit Patterns (auto-detected via aggregation)
 > Patterns spanning multiple units, surfaced by the Property Aggregator. LLM-detected.
 > Trigger: nightly batch + on-demand when N+1 same-type events accumulate (default: 3 in 90d).
+
+<!-- auto:cross-unit-patterns.summary -->_no issue_<!-- /auto:cross-unit-patterns.summary -->
 
 <!-- auto:cross-unit-patterns -->
 | pattern_type | involved_units | incident_count | first_seen | last_seen | trigger_action_suggested | confidence |
@@ -334,10 +370,12 @@ _(LLM pattern detection — Hour 6+, see `engine.aggregation-rules.md` §8.5.)_
 ---
 
 ## 9. Provenance & Source Index
+<!-- auto:provenance.summary -->_no issue_<!-- /auto:provenance.summary -->
+
 <!-- auto:provenance -->
 | source-id | type | path | last_seen |
 | --- | --- | --- | --- |
-| `bank-bank` | bank | [bank](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv) | 2026-04-25 |
+| `bank-bank` | bank | [bank](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv) | 2026-04-26 |
 | `email-emails-2024-01` | email | [emails/2024-01/ (245 files)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-01/20240131_203200_EMAIL-00257.eml) | 2024-01-31T20:32:00+00:00 |
 | `email-emails-2024-02` | email | [emails/2024-02/ (236 files)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-02/20240229_172400_EMAIL-00506.eml) | 2024-02-29T17:24:00+00:00 |
 | `email-emails-2024-03` | email | [emails/2024-03/ (262 files)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-03/20240331_180900_EMAIL-00786.eml) | 2024-03-31T18:09:00+00:00 |
@@ -363,7 +401,7 @@ _(LLM pattern detection — Hour 6+, see `engine.aggregation-rules.md` §8.5.)_
 | `email-emails-2025-11` | email | [emails/2025-11/ (245 files)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-11/20251130_214300_EMAIL-06271.eml) | 2025-11-30T21:43:00+00:00 |
 | `email-emails-2025-12` | email | [emails/2025-12/ (260 files)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251231_164200_EMAIL-06544.eml) | 2025-12-31T16:42:00+00:00 |
 | `email-emails-2026-01` | email | [emails/2026-01/ (2 files)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2026-01/20260101_084400_EMAIL-06546.eml) | 2026-01-01T08:44:00+00:00 |
-| `external-engine-aggregator` | external | [engine://aggregator](engine://aggregator/2026-04-25) | 2026-04-25 |
+| `external-engine-aggregator` | external | [engine://aggregator](engine://aggregator/2026-04-26) | 2026-04-26 |
 | `invoice-rechnungen-2024-01` | invoice | [rechnungen/2024-01/ (8 files)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/rechnungen/2024-01/20240128_DL-001_INV-00006.pdf) | 2024-01-28 |
 | `invoice-rechnungen-2024-02` | invoice | [rechnungen/2024-02/ (9 files)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/rechnungen/2024-02/20240228_DL-001_INV-00015.pdf) | 2024-02-28 |
 | `invoice-rechnungen-2024-03` | invoice | [rechnungen/2024-03/ (7 files)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/rechnungen/2024-03/20240328_DL-001_INV-00022.pdf) | 2024-03-28 |
@@ -389,19 +427,19 @@ _(LLM pattern detection — Hour 6+, see `engine.aggregation-rules.md` §8.5.)_
 | `invoice-rechnungen-2025-11` | invoice | [rechnungen/2025-11/ (8 files)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/rechnungen/2025-11/20251128_DL-001_INV-00181.pdf) | 2025-11-28 |
 | `invoice-rechnungen-2025-12` | invoice | [rechnungen/2025-12/ (8 files)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/rechnungen/2025-12/20251228_DL-001_INV-00189.pdf) | 2025-12-28 |
 | `letter-briefe-2024-04` | letter | [briefe/2024-04/ (36 files)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2024-04/20240420_etv_einladung_LTR-0036.pdf) | 2024-04-20 |
-| `letter-briefe-2024-06` | letter | [briefe/2024-06/ (3 files)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2024-06/20240627_mahnung_LTR-0039.pdf) | 2026-04-25 |
+| `letter-briefe-2024-06` | letter | [briefe/2024-06/ (3 files)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2024-06/20240627_mahnung_LTR-0039.pdf) | 2026-04-26 |
 | `letter-briefe-2024-10` | letter | [briefe/2024-10](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2024-10/20241018_mieterhoehung_LTR-0040.pdf) | 2024-10-18 |
-| `letter-briefe-2024-11` | letter | [briefe/2024-11/ (4 files)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2024-11/20241116_mahnung_LTR-0043.pdf) | 2026-04-25 |
+| `letter-briefe-2024-11` | letter | [briefe/2024-11/ (4 files)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2024-11/20241116_mahnung_LTR-0043.pdf) | 2026-04-26 |
 | `letter-briefe-2024-12` | letter | [briefe/2024-12](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2024-12/20241205_mieterhoehung_LTR-0045.pdf) | 2024-12-05 |
-| `letter-briefe-2025-02` | letter | [briefe/2025-02](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2025-02/20250218_mahnung_LTR-0046.pdf) | 2026-04-25 |
+| `letter-briefe-2025-02` | letter | [briefe/2025-02](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2025-02/20250218_mahnung_LTR-0046.pdf) | 2026-04-26 |
 | `letter-briefe-2025-03` | letter | [briefe/2025-03/ (15 files)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2025-03/20250325_hausgeld_LTR-0061.pdf) | 2025-03-25 |
 | `letter-briefe-2025-04` | letter | [briefe/2025-04/ (54 files)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2025-04/20250425_hausgeld_LTR-0114.pdf) | 2025-04-25 |
 | `letter-briefe-2025-05` | letter | [briefe/2025-05/ (16 files)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2025-05/20250528_etv_protokoll_LTR-0131.pdf) | 2025-05-28 |
-| `letter-briefe-2025-07` | letter | [briefe/2025-07](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2025-07/20250717_mahnung_LTR-0132.pdf) | 2026-04-25 |
+| `letter-briefe-2025-07` | letter | [briefe/2025-07](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2025-07/20250717_mahnung_LTR-0132.pdf) | 2026-04-26 |
 | `letter-briefe-2025-10` | letter | [briefe/2025-10](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2025-10/20251019_mahnung_LTR-0133.pdf) | 2025-10-19 |
 | `letter-briefe-2025-11` | letter | [briefe/2025-11](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2025-11/20251105_kuendigung_LTR-0134.pdf) | 2025-11-05 |
-| `letter-briefe-2025-12` | letter | [briefe/2025-12](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2025-12/20251208_mahnung_LTR-0135.pdf) | 2026-04-25 |
-| `stammdaten-stammdaten` | stammdaten | [stammdaten](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-25T20:52:09+00:00 |
+| `letter-briefe-2025-12` | letter | [briefe/2025-12](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/briefe/2025-12/20251208_mahnung_LTR-0135.pdf) | 2026-04-26 |
+| `stammdaten-stammdaten` | stammdaten | [stammdaten](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-26T09:26:19+00:00 |
 <!-- /auto:provenance -->
 
 ---

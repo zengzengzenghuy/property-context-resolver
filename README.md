@@ -99,6 +99,28 @@ bank/        ─┘   (Event, [Fact])  (filter rules) (identity-     │
 - **Single-property scope.** `PROPERTY_ID = "LIE-001"` is hard-coded in
   `extractor/models.py`. No multi-tenancy, no auth, no vector DB.
 
+## Tavily Integration Plan
+
+To treat Tavily as a "Legal & Temporal Oracle" and ensure the assistant's advice doesn't rely on stale laws or hardcoded financial constants, the integration is planned as follows:
+
+### 1. The Tavily "Sentinel" Client
+A lightweight `extractor/tavily.py` wrapper will handle search queries with a focus on recent results (using Tavily's `search_depth="advanced"` and `days=365`) to catch the latest legal changes.
+
+### 2. Dynamic Interest Rate Validation (Dunning)
+The current `DunningReconciler` uses a hardcoded `ECB_BASE_PP = 3.5`.
+*   **Integration**: During the `reconcile()` phase, if the date is "today", a Tavily search is triggered: `"Aktueller Basiszinssatz der EZB"`.
+*   **Result**: The live rate overrides the hardcoded 3.5%, ensuring the calculated `verzugszinsen_eur` is legally accurate.
+
+### 3. Legal Fact-Checking in Summaries
+The `Summarizer` assumes its knowledge of German law is current.
+*   **Integration**: In `Summarizer.summarize()`, after the LLM generates a summary, it is scanned for legal citations (e.g., `§ 288 BGB`).
+*   **Result**: A background Tavily search checks for recent amendments. If found, a `[Tavily Legal Alert]` is appended to the summary.
+
+### 4. Context Obsolescence Guard
+A "Staleness Check" will be added to the `FactStore` or `Aggregator`.
+*   **Integration**: For time-sensitive local facts (like "Mietspiegel Berlin 2024"), Tavily checks if a newer version exists.
+*   **Result**: If a newer version exists, a high-priority fact `operations.context_outdated` is emitted to flag the property dashboard.
+
 ## Build
 
 Requires Python 3.11+. Optional system dep: `tesseract` (only if you want

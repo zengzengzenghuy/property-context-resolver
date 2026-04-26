@@ -17,6 +17,8 @@
 ---
 
 ## 1. Unit
+<!-- auto:unit.summary -->_no issue_<!-- /auto:unit.summary -->
+
 <!-- auto:unit -->
 - unit_id: `<EH-XX>`
 - label: `<WE 19 | GE 37 | Stellplatz 3>`
@@ -34,6 +36,8 @@
 ---
 
 ## 2. Lease (Mietverhältnis, voll)
+<!-- auto:lease.summary -->_no issue_<!-- /auto:lease.summary -->
+
 <!-- auto:lease -->
 - lease_id, unit_ref *(this unit)*
 - start_date, term_type (`befristet | unbefristet`), end_date (if befristet)
@@ -68,6 +72,8 @@
 <!-- /auto:lease -->
 
 ### 2.1 Tenants on this Lease
+<!-- auto:tenants.summary -->_no issue_<!-- /auto:tenants.summary -->
+
 <!-- auto:tenants -->
 | tenant_id | name | role (haupt|mit) | contact_email | contact_phone | comms_pref | gesamtschuldner |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -78,12 +84,16 @@
 ## 3. Operations (this unit / this tenant)
 
 ### 3.1 Open Tickets — Critical (overdue or due ≤7 days)
+<!-- auto:tickets.critical.summary -->_no issue_<!-- /auto:tickets.critical.summary -->
+
 <!-- auto:tickets.critical -->
 | ticket_id | type (Reparatur|Mieterwechsel|Modernisierung|Abrechnung) | title | deadline | status | assignee |
 | --- | --- | --- | --- | --- | --- |
 <!-- /auto:tickets.critical -->
 
 ### 3.2 Open Tickets — Aggregate
+<!-- auto:tickets.aggregate.summary -->_no issue_<!-- /auto:tickets.aggregate.summary -->
+
 <!-- auto:tickets.aggregate -->
 - total_open: `<n>`
 - by_type: { Reparatur: `<n>`, Mieterwechsel: `<n>`, Modernisierung: `<n>`, Abrechnung: `<n>`, other: `<n>` }
@@ -102,12 +112,16 @@
 <!-- /auto:dunning -->
 
 ### 3.4 Active Reductions / Deferrals (§ 536 BGB)
+<!-- auto:reductions.summary -->_no issue_<!-- /auto:reductions.summary -->
+
 <!-- auto:reductions -->
 - date_raised, amount_or_percent, reason, status (`agreed|unilateral|disputed`)
 - *trigger: HITL exit if any entry present*
 <!-- /auto:reductions -->
 
 ### 3.5 Latest Übergabeprotokoll
+<!-- auto:handover.summary -->_no issue_<!-- /auto:handover.summary -->
+
 <!-- auto:handover -->
 - next_scheduled: { date, type, contact, source_ref } *(if appointment requested but not yet executed)*
 - last_completed:
@@ -119,12 +133,16 @@
 <!-- /auto:handover -->
 
 ### 3.6 Recurring Process State (this unit, in-flight)
+<!-- auto:recurring.summary -->_no issue_<!-- /auto:recurring.summary -->
+
 <!-- auto:recurring -->
 | process_type (`Mieterwechsel|Modernisierung|NK-Streitfall`) | started | current_step | owner | eta | blockers |
 | --- | --- | --- | --- | --- | --- |
 <!-- /auto:recurring -->
 
 ### 3.7 Vermietungs-Pipeline *(if vacant)*
+<!-- auto:vermietung.summary -->_no issue_<!-- /auto:vermietung.summary -->
+
 <!-- auto:vermietung -->
 - inserate_url, days_on_market, asking_kaltmiete
 - prospects_count, scheduled_viewings_count, applications_received_count
@@ -136,18 +154,24 @@
 ## 4. Decisions & History (this unit / this tenant)
 
 ### 4.1 Tenant Special Agreements
+<!-- auto:tenant-agreements.summary -->_no issue_<!-- /auto:tenant-agreements.summary -->
+
 <!-- auto:tenant-agreements -->
 | date | type (`Vergleich|Stundung|Sondergenehmigung|Mietminderung`) | one-line | doc_ref |
 | --- | --- | --- | --- |
 <!-- /auto:tenant-agreements -->
 
 ### 4.2 Modernisierungs-Maßnahmen (this unit)
+<!-- auto:modernization-unit.summary -->_no issue_<!-- /auto:modernization-unit.summary -->
+
 <!-- auto:modernization-unit -->
 | date_completed | scope | umlage_per_year | rent_increase_per_month | tenant_opted_out |
 | --- | --- | --- | --- | --- |
 <!-- /auto:modernization-unit -->
 
 ### 4.3 Sticky Communication Threads (this tenant)
+<!-- auto:sticky-threads.summary -->_no issue_<!-- /auto:sticky-threads.summary -->
+
 <!-- auto:sticky-threads -->
 | thread_id | subject | last_msg_date | parties | status | one-line outcome | pointer |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -156,6 +180,8 @@
 ---
 
 ## 5. Provenance & Source Index (this unit/tenant)
+<!-- auto:provenance.summary -->_no issue_<!-- /auto:provenance.summary -->
+
 <!-- auto:provenance -->
 | source-id | type (`stammdaten|bank|lease-pdf|email|brief|rechnung|external`) | path | last_seen |
 | --- | --- | --- | --- |

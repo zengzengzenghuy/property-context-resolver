@@ -18,6 +18,7 @@ from typing import Any, Callable, Iterable, Optional
 
 from .engine import FactStore, _source_from_ref, format_value
 from .models import Fact
+from .section_summary import make_section_summary
 from .summarizer import get_summarizer
 
 
@@ -965,31 +966,337 @@ def render_sticky_threads(store: FactStore, ctx: dict[str, Any]) -> str:
     return _table(headers, rows)
 
 
+# ---------- per-section summaries ----------
+#
+# Per the user's directive: every section in `context.<unit|property>.<id>.md`
+# carries a `<!-- auto:<section>.summary -->` block that summarizes that
+# section. Each summary follows the Signal-First pattern wired into
+# `extractor.section_summary` — deterministic Python builds a salience payload
+# (filtered facts + bounded raw excerpts), the LLM renders ≤3 German sentences
+# with triage tag and citations. Sections with no relevant facts emit
+# `_no issue_`. The summary cache in `out/llm_cache/summary.json` SHA256s the
+# full payload, so adding new files in `raw/` invalidates exactly the affected
+# sections; unchanged content → cache hit → zero API calls.
+#
+# `dunning.summary` keeps its bespoke renderer above (`render_dunning_summary`)
+# because the dunning Trifecta is heavily curated; the rest are generic.
+
+# Lease/tenancy keys — facts that live on the `mieter` entity but describe the
+# contract, not the tenant identity.
+_LEASE_KEYS = {
+    "kaltmiete", "nk_vorauszahlung", "mietbeginn", "mietende",
+    "kaution", "iban", "einheit_id",
+}
+_TENANT_CONTACT_KEYS = {"anrede", "vorname", "nachname", "email", "telefon"}
+
+
+def _on_unit(f: Fact, ctx: dict[str, Any]) -> bool:
+    return f.entity_id == ctx.get("unit_id")
+
+
+def _on_property(f: Fact, ctx: dict[str, Any]) -> bool:
+    return f.entity_id == ctx.get("property_id")
+
+
+def _on_tenant(f: Fact, ctx: dict[str, Any]) -> bool:
+    return f.entity_id in (ctx.get("tenant_ids") or [])
+
+
+def _starts_any(key: str, prefixes: tuple[str, ...]) -> bool:
+    return any(key.startswith(p) for p in prefixes)
+
+
+# ----- unit summaries -----
+
+render_unit_summary = make_section_summary(
+    "unit",
+    fact_filter=lambda f, ctx: (
+        _on_unit(f, ctx)
+        and f.entity_type == "einheit"
+        and not _starts_any(f.key, ("ticket.", "reductions.", "handover.",
+                                     "lease.", "sticky_thread.",
+                                     "modernization.", "vermietung."))
+    ),
+    include_raw=False,
+)
+
+render_lease_summary = make_section_summary(
+    "lease",
+    fact_filter=lambda f, ctx: (
+        _on_tenant(f, ctx)
+        and (f.key.startswith("lease.") or f.key.startswith("subletting.")
+             or f.key in _LEASE_KEYS)
+    ),
+    include_raw=True,
+    max_raw_files=4,
+)
+
+render_tenants_summary = make_section_summary(
+    "tenants",
+    fact_filter=lambda f, ctx: _on_tenant(f, ctx) and f.key in _TENANT_CONTACT_KEYS,
+    include_raw=False,
+)
+
+render_tickets_critical_summary = make_section_summary(
+    "tickets.critical",
+    fact_filter=lambda f, ctx: _on_unit(f, ctx) and f.key.startswith("ticket."),
+    include_raw=True,
+    max_raw_files=12,
+)
+
+render_tickets_aggregate_summary = make_section_summary(
+    "tickets.aggregate",
+    fact_filter=lambda f, ctx: _on_unit(f, ctx) and f.key.startswith("ticket."),
+    include_raw=False,
+)
+
+render_reductions_summary = make_section_summary(
+    "reductions",
+    fact_filter=lambda f, ctx: _on_unit(f, ctx) and f.key.startswith("reductions."),
+    include_raw=True,
+    max_raw_files=8,
+)
+
+render_handover_summary = make_section_summary(
+    "handover",
+    fact_filter=lambda f, ctx: _on_unit(f, ctx) and f.key.startswith("handover."),
+    include_raw=True,
+    max_raw_files=4,
+)
+
+render_recurring_summary = make_section_summary(
+    "recurring",
+    fact_filter=lambda f, ctx: (
+        (_on_unit(f, ctx) and (f.key.startswith("lease.cancellation")
+                                or f.key == "occupancy_status"))
+        or (_on_tenant(f, ctx) and f.key.startswith("lease.cancellation"))
+    ),
+    include_raw=True,
+    max_raw_files=4,
+)
+
+render_vermietung_summary = make_section_summary(
+    "vermietung",
+    fact_filter=lambda f, ctx: _on_unit(f, ctx) and f.key.startswith("vermietung."),
+    include_raw=False,
+)
+
+render_tenant_agreements_summary = make_section_summary(
+    "tenant-agreements",
+    fact_filter=lambda f, ctx: _on_tenant(f, ctx) and f.key.startswith("tenant_agreement."),
+    include_raw=True,
+    max_raw_files=4,
+)
+
+render_modernization_unit_summary = make_section_summary(
+    "modernization-unit",
+    fact_filter=lambda f, ctx: _on_unit(f, ctx) and f.key.startswith("modernization."),
+    include_raw=True,
+    max_raw_files=4,
+)
+
+render_sticky_threads_summary = make_section_summary(
+    "sticky-threads",
+    fact_filter=lambda f, ctx: (
+        (_on_unit(f, ctx) or _on_tenant(f, ctx))
+        and f.key.startswith("sticky_thread.")
+    ),
+    include_raw=True,
+    max_raw_files=10,
+)
+
+render_unit_provenance_summary = make_section_summary(
+    "provenance",
+    fact_filter=lambda f, ctx: (
+        _on_unit(f, ctx) or _on_tenant(f, ctx)
+    ),
+    include_raw=False,
+)
+
+
+# ----- property summaries -----
+
+render_property_summary = make_section_summary(
+    "property",
+    fact_filter=lambda f, ctx: (
+        _on_property(f, ctx)
+        and not f.key.startswith("operations.")
+        and not f.key.startswith("verwalter")
+    ),
+    include_raw=False,
+)
+
+render_owners_summary = make_section_summary(
+    "owners",
+    fact_filter=lambda f, ctx: f.entity_type == "eigentuemer",
+    include_raw=False,
+)
+
+render_mandate_summary = make_section_summary(
+    "mandate",
+    fact_filter=lambda f, ctx: _on_property(f, ctx) and f.key.startswith("verwalter"),
+    include_raw=False,
+)
+
+render_units_index_summary = make_section_summary(
+    "units-index",
+    fact_filter=lambda f, ctx: f.entity_type == "einheit" and f.key in {
+        "occupancy_status", "wohnflaeche_qm", "zimmer", "miteigentumsanteil", "typ",
+    },
+    include_raw=False,
+)
+
+render_compliance_summary = make_section_summary(
+    "compliance",
+    fact_filter=lambda f, ctx: f.key.startswith("compliance."),
+    include_raw=False,
+)
+
+render_vendor_quotes_summary = make_section_summary(
+    "vendor-quotes",
+    fact_filter=lambda f, ctx: (f.entity_type == "dienstleister"
+                                  and f.key.startswith("vendor_quote.")),
+    include_raw=True,
+    max_raw_files=6,
+)
+
+render_vendor_dunning_summary = make_section_summary(
+    "vendor-dunning",
+    fact_filter=lambda f, ctx: (f.entity_type == "dienstleister"
+                                  and f.key.startswith("vendor_dunning.")),
+    include_raw=True,
+    max_raw_files=8,
+)
+
+render_recurring_property_summary = make_section_summary(
+    "recurring-property",
+    fact_filter=lambda f, ctx: (
+        f.entity_type == "einheit" and f.key.startswith("lease.cancellation")
+    ),
+    include_raw=False,
+)
+
+render_financials_summary = make_section_summary(
+    "financials",
+    fact_filter=lambda f, ctx: _on_property(f, ctx) and f.key in {
+        "ruecklage_balance", "last_nk_abrechnung", "last_hausgeld_abrechnung",
+    },
+    include_raw=False,
+)
+
+render_stakeholders_summary = make_section_summary(
+    "stakeholders",
+    fact_filter=lambda f, ctx: (
+        f.entity_type == "dienstleister"
+        and f.entity_id in (ctx.get("nonutility_dl_ids") or set())
+    ),
+    include_raw=False,
+)
+
+render_utilities_summary = make_section_summary(
+    "utilities",
+    fact_filter=lambda f, ctx: (
+        f.entity_type == "dienstleister"
+        and f.entity_id in (ctx.get("utility_dl_ids") or set())
+    ),
+    include_raw=False,
+)
+
+render_authorities_summary = make_section_summary(
+    "authorities",
+    fact_filter=lambda f, ctx: f.key.startswith("authority."),
+    include_raw=False,
+)
+
+render_policies_summary = make_section_summary(
+    "policies",
+    fact_filter=lambda f, ctx: f.key.startswith("policy."),
+    include_raw=False,
+)
+
+render_weg_decisions_summary = make_section_summary(
+    "weg-decisions",
+    fact_filter=lambda f, ctx: f.key.startswith("weg_decision."),
+    include_raw=True,
+    max_raw_files=6,
+)
+
+render_weg_agenda_summary = make_section_summary(
+    "weg-agenda-backlog",
+    fact_filter=lambda f, ctx: f.key.startswith("weg_agenda."),
+    include_raw=False,
+)
+
+render_weg_einsprueche_summary = make_section_summary(
+    "weg-einsprueche",
+    fact_filter=lambda f, ctx: f.key.startswith("weg_einspruch."),
+    include_raw=False,
+)
+
+render_modernization_summary = make_section_summary(
+    "modernization",
+    fact_filter=lambda f, ctx: f.key.startswith("modernization."),
+    include_raw=True,
+    max_raw_files=4,
+)
+
+render_cross_unit_patterns_summary = make_section_summary(
+    "cross-unit-patterns",
+    fact_filter=lambda f, ctx: f.key.startswith("pattern."),
+    include_raw=False,
+)
+
+render_property_provenance_summary = make_section_summary(
+    "provenance",
+    fact_filter=lambda f, ctx: True,
+    include_raw=False,
+)
+
+
 # ---------- registry ----------
 
 PROPERTY_BLOCKS: dict[str, Callable[[FactStore, dict[str, Any]], str]] = {
     "property.display_name": render_property_display_name,
     "meta": render_property_meta,
     "property": render_property,
+    "property.summary": render_property_summary,
     "owners": render_owners,
+    "owners.summary": render_owners_summary,
     "mandate": render_mandate,
+    "mandate.summary": render_mandate_summary,
     "units-index": render_units_index,
+    "units-index.summary": render_units_index_summary,
     "compliance": render_compliance,
+    "compliance.summary": render_compliance_summary,
     "vendor-quotes": render_vendor_quotes,
+    "vendor-quotes.summary": render_vendor_quotes_summary,
     "vendor-dunning": render_vendor_dunning,
+    "vendor-dunning.summary": render_vendor_dunning_summary,
     "recurring-property": render_recurring_property,
+    "recurring-property.summary": render_recurring_property_summary,
     "financials": render_financials,
+    "financials.summary": render_financials_summary,
     "operations-summary": render_operations_summary,
     "stakeholders": render_stakeholders,
+    "stakeholders.summary": render_stakeholders_summary,
     "utilities": render_utilities,
+    "utilities.summary": render_utilities_summary,
     "authorities": render_authorities,
+    "authorities.summary": render_authorities_summary,
     "policies": render_policies,
+    "policies.summary": render_policies_summary,
     "weg-decisions": render_weg_decisions,
+    "weg-decisions.summary": render_weg_decisions_summary,
     "weg-agenda-backlog": render_weg_agenda_backlog,
+    "weg-agenda-backlog.summary": render_weg_agenda_summary,
     "weg-einsprueche": render_weg_einsprueche,
+    "weg-einsprueche.summary": render_weg_einsprueche_summary,
     "modernization": render_modernization,
+    "modernization.summary": render_modernization_summary,
     "cross-unit-patterns": render_cross_unit_patterns,
+    "cross-unit-patterns.summary": render_cross_unit_patterns_summary,
     "provenance": render_property_provenance,
+    "provenance.summary": render_property_provenance_summary,
 }
 
 
@@ -997,20 +1304,33 @@ UNIT_BLOCKS: dict[str, Callable[[FactStore, dict[str, Any]], str]] = {
     "unit_id": render_unit_id,
     "meta": render_unit_meta,
     "unit": render_unit,
+    "unit.summary": render_unit_summary,
     "lease": render_lease,
+    "lease.summary": render_lease_summary,
     "tenants": render_tenants,
+    "tenants.summary": render_tenants_summary,
     "tickets.critical": render_tickets_critical,
+    "tickets.critical.summary": render_tickets_critical_summary,
     "tickets.aggregate": render_tickets_aggregate,
+    "tickets.aggregate.summary": render_tickets_aggregate_summary,
     "dunning.summary": render_dunning_summary,
     "dunning": render_dunning,
     "reductions": render_reductions,
+    "reductions.summary": render_reductions_summary,
     "handover": render_handover,
+    "handover.summary": render_handover_summary,
     "recurring": render_recurring_unit,
+    "recurring.summary": render_recurring_summary,
     "vermietung": render_vermietung,
+    "vermietung.summary": render_vermietung_summary,
     "tenant-agreements": render_tenant_agreements,
+    "tenant-agreements.summary": render_tenant_agreements_summary,
     "modernization-unit": render_modernization_unit,
+    "modernization-unit.summary": render_modernization_unit_summary,
     "sticky-threads": render_sticky_threads,
+    "sticky-threads.summary": render_sticky_threads_summary,
     "provenance": render_unit_provenance,
+    "provenance.summary": render_unit_provenance_summary,
 }
 
 

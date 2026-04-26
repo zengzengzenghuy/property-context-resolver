@@ -5,7 +5,7 @@
 > **Property-wide data lives in `context.property.md`** — see `parent_property_ref` below.
 
 <!-- auto:meta -->
-- last_built_at: `2026-04-25T20:52:39+00:00`
+- last_built_at: `2026-04-26T09:33:51+00:00`
 - build_hash: `engine-v2`
 - engine_version: `0.2.0`
 - schema_version: `spine-v2-split` (2026-04-25)
@@ -19,6 +19,8 @@
 ---
 
 ## 1. Unit
+<!-- auto:unit.summary -->[Administrative] Einheit WE 23 (96 qm, 3,5 Zimmer, 2. OG mitte) ist 3,5-Zimmer-Wohnung mit Miteigentumsanteil 223/10000 in HAUS-14 [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#einheit/EH-023). Mieter Dominic Jacobs hat Hausgeld 12/2025 am 2025-12-04 mit 33,57 EUR gezahlt [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-00002); Wohnrecht folgt Mietvertrag, Hausgeldpflicht § 21 WEG. Wasserschaden im Bad wurde am 2025-12-18 gemeldet und bedarf Schadensfeststellung.<!-- /auto:unit.summary -->
+
 <!-- auto:unit -->
 - unit_id: `EH-023`
 - label: WE 23
@@ -40,6 +42,8 @@
 ---
 
 ## 2. Lease (Mietverhältnis, voll)
+<!-- auto:lease.summary -->_no issue_<!-- /auto:lease.summary -->
+
 <!-- auto:lease -->
 - lease_id: `LEASE-MIE-007`
 - unit_ref: `EH-023`
@@ -57,6 +61,8 @@
 <!-- /auto:lease -->
 
 ### 2.1 Tenants on this Lease
+<!-- auto:tenants.summary -->_no issue_<!-- /auto:tenants.summary -->
+
 <!-- auto:tenants -->
 | tenant_id | name | role | contact_email | contact_phone | comms_pref | gesamtschuldner |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -68,6 +74,8 @@
 ## 3. Operations (this unit / this tenant)
 
 ### 3.1 Open Tickets — Critical (overdue or due ≤7 days)
+<!-- auto:tickets.critical.summary -->[Emergency] Wasserschaden in Einheit EH-023 (Badezimmer, Tropfwasser von oben) seit mindestens 10. August 2025 wiederholt gemeldet; Verwalter bestätigt Eingang am 18. Dezember 2025, erklärt „Rückmeldung innerhalb weniger Tage" ohne dokumentierte Reparatur oder Ursachenermittlung. Vermieter haftet für Mängelbeseitigung nach § 535 I 1 BGB (Wohnung in vertragsgemäßem Zustand erhalten); kritischer Schaden erfordert Sofortmaßnahmen zur Schadenminderung nach § 280 I BGB und § 536 I BGB (Mietminderung ab Mangelanzeige). Timeline: erste Meldung 10.08.2025, wiederholte Meldungen Juli–Dezember 2025, über 4 Monate ohne erkannte Abhilfe; Verwaltungsreaktion nur mit Standardphrase, keine Handwerkerentsendung dokumentiert.<!-- /auto:tickets.critical.summary -->
+
 <!-- auto:tickets.critical -->
 | ticket_id | type | title | deadline | status | assignee |
 | --- | --- | --- | --- | --- | --- |
@@ -99,6 +107,8 @@
 <!-- /auto:tickets.critical -->
 
 ### 3.2 Open Tickets — Aggregate
+<!-- auto:tickets.aggregate.summary -->[Emergency] Wasserschaden in EH-023 (Badezimmer), gemeldet 2025-12-18, kritische Severity [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-01/20240128_140800_EMAIL-00224.eml). Vermieter haftet für Mängelbeseitigung nach § 535 I BGB (Erhaltungspflicht); Mieter hat Schadensminderungspflicht. Über vier Monate ohne dokumentierte Behebung — sofortige Bestandsaufnahme und Reparaturauftrag erforderlich; Verzögerung begründet potenzielle Schadensersatzforderung nach § 280 BGB.<!-- /auto:tickets.aggregate.summary -->
+
 <!-- auto:tickets.aggregate -->
 - total_open: `31`
 - by_type: { schluessel: `6`, wasserschaden: `25` }
@@ -107,7 +117,7 @@
 
 ### 3.3 Active Mahnverfahren
 
-<!-- auto:dunning.summary -->[Routine] Mieter MIE-007 ist seit vier Monaten im Verzug; offener Betrag 7.068,00 EUR zzgl. 90,53 EUR Verzugszinsen, letzte Zahlung 2025-12-03 [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-01579). Vertraglich geschuldet sind monatlich 1.767,00 EUR (Kaltmiete 1.511,00 EUR + NK-Vorauszahlung 256,00 EUR); Verzug nach § 286 BGB, Verzugszinsen § 288 I BGB. Mahnstufe 1 aktiv, nächster Schritt: 2. Mahnung nach 14 Tagen.<!-- /auto:dunning.summary -->
+<!-- auto:dunning.summary -->[Routine] Mieter MIE-007 ist seit vier Monaten im Verzug; offener Betrag 7.068,00 EUR zzgl. 92,17 EUR Verzugszinsen, letzte Zahlung 2025-12-03 [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-01579). Vertraglich geschuldet sind monatlich 1.767,00 EUR (Kaltmiete 1.511,00 EUR + NK 256,00 EUR) [(stammdaten)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json#mieter/MIE-007). Verzug nach § 286 BGB festgestellt, Verzugszinsen § 288 I BGB (Basiszins + 5pp); Mahnstufe 1, nächster Schritt: 2. Mahnung nach 14 Tagen.<!-- /auto:dunning.summary -->
 
 #### Per claim
 <!-- auto:dunning -->
@@ -118,12 +128,18 @@
 <!-- /auto:dunning -->
 
 ### 3.4 Active Reductions / Deferrals (§ 536 BGB)
+<!-- auto:reductions.summary -->_no issue_<!-- /auto:reductions.summary -->
+
 <!-- auto:reductions -->_(no data in source yet)_<!-- /auto:reductions -->
 
 ### 3.5 Latest Übergabeprotokoll
+<!-- auto:handover.summary -->_no issue_<!-- /auto:handover.summary -->
+
 <!-- auto:handover -->_(no data in source yet)_<!-- /auto:handover -->
 
 ### 3.6 Recurring Process State (this unit, in-flight)
+<!-- auto:recurring.summary -->_no issue_<!-- /auto:recurring.summary -->
+
 <!-- auto:recurring -->
 | process_type | started | current_step | owner | eta | blockers |
 | --- | --- | --- | --- | --- | --- |
@@ -131,6 +147,8 @@ _(no data in source yet)_
 <!-- /auto:recurring -->
 
 ### 3.7 Vermietungs-Pipeline *(if vacant)*
+<!-- auto:vermietung.summary -->_no issue_<!-- /auto:vermietung.summary -->
+
 <!-- auto:vermietung -->_Not yet activated. Triggers when occupancy_status flips to vacant after move-out._<!-- /auto:vermietung -->
 
 ---
@@ -138,6 +156,8 @@ _(no data in source yet)_
 ## 4. Decisions & History (this unit / this tenant)
 
 ### 4.1 Tenant Special Agreements
+<!-- auto:tenant-agreements.summary -->_no issue_<!-- /auto:tenant-agreements.summary -->
+
 <!-- auto:tenant-agreements -->
 | date | type | one-line | doc_ref |
 | --- | --- | --- | --- |
@@ -145,6 +165,8 @@ _(no data in source yet)_
 <!-- /auto:tenant-agreements -->
 
 ### 4.2 Modernisierungs-Maßnahmen (this unit)
+<!-- auto:modernization-unit.summary -->_no issue_<!-- /auto:modernization-unit.summary -->
+
 <!-- auto:modernization-unit -->
 | date_completed | scope | umlage_per_year | rent_increase_per_month | tenant_opted_out |
 | --- | --- | --- | --- | --- |
@@ -152,6 +174,8 @@ _(no data in source yet)_
 <!-- /auto:modernization-unit -->
 
 ### 4.3 Sticky Communication Threads (this tenant)
+<!-- auto:sticky-threads.summary -->[Routine] Mieter MIE-007 beschwert sich seit 2024-01-09 über Lärmbelästigung aus der darüberliegenden Wohnung; Thread mit 56 Nachrichten aktiv, letzte Meldung 2025-12-15 [(email)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251215_104800_EMAIL-06401.eml). Nach § 858 BGB (Besitz- und Lärmschutz) und Hausordnung-Klauseln zur Ruhezeit ist der beklagte Mieter zur Einhaltung von Ruhezeiten (typisch 22:00–07:00 Uhr) verpflichtet; formale Abmahnung erforderlich, sofern Lärmstörungen fortbestehen. Nächster Schritt: Übergabe an Fachanwalt zur Abmahnung und Dokumentation aller Verstöße für mögliche Kündigung nach § 569 II BGB.<!-- /auto:sticky-threads.summary -->
+
 <!-- auto:sticky-threads -->
 | thread_id | subject | last_msg_date | parties | status | one-line outcome | pointer |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -162,10 +186,12 @@ _(no data in source yet)_
 ---
 
 ## 5. Provenance & Source Index (this unit/tenant)
+<!-- auto:provenance.summary -->[Routine] Mieter MIE-007 (David Jenkins, Einheit EH-023, WE 23) ist seit vier Monaten im Verzug; offener Betrag 7.068,00 EUR zzgl. 92,17 EUR Verzugszinsen, letzte Zahlung 2025-12-03 [(bank)](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv#TX-00002). Vertraglich geschuldet sind monatlich 1.767,00 EUR (Kaltmiete 1.511,00 EUR + NK-Vorauszahlung 256,00 EUR); Mietbeginn 2024-01-07. Verzug nach § 286 BGB festgestellt, Verzugszinsen § 288 I BGB (Basiszins 3,5 % + 5 pp); Mahnstufe 1, nächster Schritt: 2. Mahnung nach 14 Tagen.<!-- /auto:provenance.summary -->
+
 <!-- auto:provenance -->
 | source-id | type | path | last_seen |
 | --- | --- | --- | --- |
-| `kontoauszug_2024_2025-csv` | bank | [bank/kontoauszug_2024_2025.csv](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv) | 2026-04-25 |
+| `kontoauszug_2024_2025-csv` | bank | [bank/kontoauszug_2024_2025.csv](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/bank/kontoauszug_2024_2025.csv) | 2026-04-26 |
 | `20240128_140800_EMAIL-00224-eml` | email | [emails/2024-01/20240128_140800_EMAIL-00224.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-01/20240128_140800_EMAIL-00224.eml) | 2024-01-28T14:08:00+00:00 |
 | `20240201_083000_EMAIL-00260-eml` | email | [emails/2024-02/20240201_083000_EMAIL-00260.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-02/20240201_083000_EMAIL-00260.eml) | 2024-02-01T08:30:00+00:00 |
 | `20240201_150700_EMAIL-00270-eml` | email | [emails/2024-02/20240201_150700_EMAIL-00270.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2024-02/20240201_150700_EMAIL-00270.eml) | 2024-02-01T15:07:00+00:00 |
@@ -237,7 +263,7 @@ _(no data in source yet)_
 | `20251215_104800_EMAIL-06401-eml` | email | [emails/2025-12/20251215_104800_EMAIL-06401.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251215_104800_EMAIL-06401.eml) | 2025-12-15 |
 | `20251217_105000_EMAIL-06418-eml` | email | [emails/2025-12/20251217_105000_EMAIL-06418.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251217_105000_EMAIL-06418.eml) | 2025-12-17T10:50:00+00:00 |
 | `20251218_135000_EMAIL-06433-eml` | email | [emails/2025-12/20251218_135000_EMAIL-06433.eml](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/emails/2025-12/20251218_135000_EMAIL-06433.eml) | 2025-12-18T13:50:00+00:00 |
-| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-25T20:52:09+00:00 |
+| `stammdaten-json` | stammdaten | [stammdaten/stammdaten.json](https://github.com/zengzengzenghuy/property-context-resolver/blob/main/raw/stammdaten/stammdaten.json) | 2026-04-26T09:26:19+00:00 |
 <!-- /auto:provenance -->
 
 ---
