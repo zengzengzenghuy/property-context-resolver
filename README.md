@@ -1,5 +1,9 @@
 # property-context-resolver
 
+<p align="center">
+  < <img src="./logo.png" alt="buena-context-buddy logo" width="50%" />  
+</p>
+
 Turn the chaos of property-management artifacts — emails, scanned letters,
 vendor invoices, bank statements, master-data CSVs — into one auditable
 `context.md` per property and per unit, with surgical updates that preserve
@@ -62,18 +66,18 @@ bank/        ─┘   (Event, [Fact])  (filter rules) (identity-     │
 
 ### Components
 
-| # | Module                              | Role                                                                          |
-|---|-------------------------------------|-------------------------------------------------------------------------------|
-| 1 | `extractor/sources/*`               | One connector per source kind (stammdaten / emails / briefe / rechnungen / bank). Yields `(Event, [Fact])`. |
-| 2 | `extractor/identity.py`             | `IdentityResolver` — exact match on email/IBAN/einheit_nr/phone, then fuzzy name (`difflib`, threshold 0.86). |
-| 3 | `extractor/engine.py::NoiseFilter`  | Drops auto-acks and other non-signal events. Stub for now; expand with quoted-reply / signature stripping. |
-| 4 | `extractor/engine.py::FactExtractor`| Identity-enriches each fact. Hooks for LLM-based enrichment (currently empty). |
-| 5 | `extractor/engine.py::FactStore`    | Bucketed `(entity_id, key)` index, append-only dedup, conflict detection at confidence floor 0.7, tie-break on confidence > observed_at > source priority > extracted_at. JSONL round-trip. |
-| 6 | `extractor/engine.py::DunningReconciler` | Per-tenant payment-ledger reconciliation against `kaltmiete + nk_vorauszahlung`. Emits `dunning.*` facts (mahnstufe, months_overdue, offener_betrag, verzugszinsen) anchored on § 286 / § 288 BGB. |
-| 7 | `extractor/aggregator.py`           | `PropertyAggregator` — emits `operations.*` facts on `LIE-001` from unit-scoped state (rented/vacant/own-use counts, active dunning, pending handovers). See `engine.aggregation-rules.md` §5.1. |
-| 8 | `extractor/merger.py` + `blocks.py` | `PropertyMerger` / `UnitMerger` — surgical update of `<!-- auto:NAME -->` blocks. Each block is a `(store, ctx) -> str` render fn registered in `PROPERTY_BLOCKS` / `UNIT_BLOCKS`. Anything outside auto-blocks is preserved across runs. |
-| 9 | `extractor/summarizer.py`           | Anthropic-backed LLM summary for `<!-- auto:*.summary -->` blocks. Signal-First philosophy in the system prompt; pre-filtered signal payloads built deterministically in `blocks.py`. File-cached at `out/llm_cache/summary.json`. No-ops gracefully without `ANTHROPIC_API_KEY`. |
-| 10| `extractor/sb.py`                   | `SupabaseSink` — mirrors rendered Markdown into Supabase under `spine-v2-split`. No-op when keys are unset. |
+| #   | Module                                   | Role                                                                                                                                                                                                                                                                              |
+| --- | ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | `extractor/sources/*`                    | One connector per source kind (stammdaten / emails / briefe / rechnungen / bank). Yields `(Event, [Fact])`.                                                                                                                                                                       |
+| 2   | `extractor/identity.py`                  | `IdentityResolver` — exact match on email/IBAN/einheit_nr/phone, then fuzzy name (`difflib`, threshold 0.86).                                                                                                                                                                     |
+| 3   | `extractor/engine.py::NoiseFilter`       | Drops auto-acks and other non-signal events. Stub for now; expand with quoted-reply / signature stripping.                                                                                                                                                                        |
+| 4   | `extractor/engine.py::FactExtractor`     | Identity-enriches each fact. Hooks for LLM-based enrichment (currently empty).                                                                                                                                                                                                    |
+| 5   | `extractor/engine.py::FactStore`         | Bucketed `(entity_id, key)` index, append-only dedup, conflict detection at confidence floor 0.7, tie-break on confidence > observed_at > source priority > extracted_at. JSONL round-trip.                                                                                       |
+| 6   | `extractor/engine.py::DunningReconciler` | Per-tenant payment-ledger reconciliation against `kaltmiete + nk_vorauszahlung`. Emits `dunning.*` facts (mahnstufe, months_overdue, offener_betrag, verzugszinsen) anchored on § 286 / § 288 BGB.                                                                                |
+| 7   | `extractor/aggregator.py`                | `PropertyAggregator` — emits `operations.*` facts on `LIE-001` from unit-scoped state (rented/vacant/own-use counts, active dunning, pending handovers). See `engine.aggregation-rules.md` §5.1.                                                                                  |
+| 8   | `extractor/merger.py` + `blocks.py`      | `PropertyMerger` / `UnitMerger` — surgical update of `<!-- auto:NAME -->` blocks. Each block is a `(store, ctx) -> str` render fn registered in `PROPERTY_BLOCKS` / `UNIT_BLOCKS`. Anything outside auto-blocks is preserved across runs.                                         |
+| 9   | `extractor/summarizer.py`                | Anthropic-backed LLM summary for `<!-- auto:*.summary -->` blocks. Signal-First philosophy in the system prompt; pre-filtered signal payloads built deterministically in `blocks.py`. File-cached at `out/llm_cache/summary.json`. No-ops gracefully without `ANTHROPIC_API_KEY`. |
+| 10  | `extractor/sb.py`                        | `SupabaseSink` — mirrors rendered Markdown into Supabase under `spine-v2-split`. No-op when keys are unset.                                                                                                                                                                       |
 
 ### Key design choices
 
@@ -104,22 +108,29 @@ bank/        ─┘   (Event, [Fact])  (filter rules) (identity-     │
 To treat Tavily as a "Legal & Temporal Oracle" and ensure the assistant's advice doesn't rely on stale laws or hardcoded financial constants, the integration is planned as follows:
 
 ### 1. The Tavily "Sentinel" Client
+
 A lightweight `extractor/tavily.py` wrapper will handle search queries with a focus on recent results (using Tavily's `search_depth="advanced"` and `days=365`) to catch the latest legal changes.
 
 ### 2. Dynamic Interest Rate Validation (Dunning)
+
 The current `DunningReconciler` uses a hardcoded `ECB_BASE_PP = 3.5`.
-*   **Integration**: During the `reconcile()` phase, if the date is "today", a Tavily search is triggered: `"Aktueller Basiszinssatz der EZB"`.
-*   **Result**: The live rate overrides the hardcoded 3.5%, ensuring the calculated `verzugszinsen_eur` is legally accurate.
+
+- **Integration**: During the `reconcile()` phase, if the date is "today", a Tavily search is triggered: `"Aktueller Basiszinssatz der EZB"`.
+- **Result**: The live rate overrides the hardcoded 3.5%, ensuring the calculated `verzugszinsen_eur` is legally accurate.
 
 ### 3. Legal Fact-Checking in Summaries
+
 The `Summarizer` assumes its knowledge of German law is current.
-*   **Integration**: In `Summarizer.summarize()`, after the LLM generates a summary, it is scanned for legal citations (e.g., `§ 288 BGB`).
-*   **Result**: A background Tavily search checks for recent amendments. If found, a `[Tavily Legal Alert]` is appended to the summary.
+
+- **Integration**: In `Summarizer.summarize()`, after the LLM generates a summary, it is scanned for legal citations (e.g., `§ 288 BGB`).
+- **Result**: A background Tavily search checks for recent amendments. If found, a `[Tavily Legal Alert]` is appended to the summary.
 
 ### 4. Context Obsolescence Guard
+
 A "Staleness Check" will be added to the `FactStore` or `Aggregator`.
-*   **Integration**: For time-sensitive local facts (like "Mietspiegel Berlin 2024"), Tavily checks if a newer version exists.
-*   **Result**: If a newer version exists, a high-priority fact `operations.context_outdated` is emitted to flag the property dashboard.
+
+- **Integration**: For time-sensitive local facts (like "Mietspiegel Berlin 2024"), Tavily checks if a newer version exists.
+- **Result**: If a newer version exists, a high-priority fact `operations.context_outdated` is emitted to flag the property dashboard.
 
 ## Build
 
@@ -204,24 +215,24 @@ at the top — copy that pattern when adding new cases.
 
 ## Configuration
 
-| Variable                      | Used by                | Effect when unset                            |
-|-------------------------------|------------------------|----------------------------------------------|
-| `GEMINI_API_KEY`              | `extractor/summarizer.py` | enables Gemini summaries; if missing, falls back to `ANTHROPIC_API_KEY`. |
-| `ANTHROPIC_API_KEY`           | `extractor/summarizer.py` | enables Claude summaries; used if `GEMINI_API_KEY` is missing. |
-| `TAVILY_API_KEY`              | `extractor/tavily.py`    | enables live legal/temporal fact-checking; if missing, falls back to hardcoded defaults. |
-| `SUPABASE_URL` + `SUPABASE_SERVICE_KEY` | `extractor/sb.py` | Supabase mirror is skipped; local Markdown still written. |
-| `SOURCE_REF_BASE`             | `extractor/source_ref.py` | Autodetect from `git remote` + current branch; fall back to local absolute path. |
+| Variable                                | Used by                   | Effect when unset                                                                        |
+| --------------------------------------- | ------------------------- | ---------------------------------------------------------------------------------------- |
+| `GEMINI_API_KEY`                        | `extractor/summarizer.py` | enables Gemini summaries; if missing, falls back to `ANTHROPIC_API_KEY`.                 |
+| `ANTHROPIC_API_KEY`                     | `extractor/summarizer.py` | enables Claude summaries; used if `GEMINI_API_KEY` is missing.                           |
+| `TAVILY_API_KEY`                        | `extractor/tavily.py`     | enables live legal/temporal fact-checking; if missing, falls back to hardcoded defaults. |
+| `SUPABASE_URL` + `SUPABASE_SERVICE_KEY` | `extractor/sb.py`         | Supabase mirror is skipped; local Markdown still written.                                |
+| `SOURCE_REF_BASE`                       | `extractor/source_ref.py` | Autodetect from `git remote` + current branch; fall back to local absolute path.         |
 
 CLI flags on `run.py`:
 
-| Flag                       | Default     | Purpose                                                        |
-|----------------------------|-------------|----------------------------------------------------------------|
-| `raw`                      | (required)  | Path to the `raw/` corpus.                                     |
-| `--out`                    | `out`       | Output dir for `events.jsonl` / `facts.jsonl` / `llm_cache/`.  |
-| `--repo-root`              | `cwd`       | Where `context.{property,unit}.*.md` are written.              |
-| `--include-incremental`    | off         | Walk `raw/incremental/` (the second-run fixture).              |
-| `--source-ref-base`        | (autodetect)| Override the GitHub blob base for citations.                   |
-| `--today`                  | system date | Reference date for dunning interest + LLM legal deadlines.     |
+| Flag                    | Default      | Purpose                                                       |
+| ----------------------- | ------------ | ------------------------------------------------------------- |
+| `raw`                   | (required)   | Path to the `raw/` corpus.                                    |
+| `--out`                 | `out`        | Output dir for `events.jsonl` / `facts.jsonl` / `llm_cache/`. |
+| `--repo-root`           | `cwd`        | Where `context.{property,unit}.*.md` are written.             |
+| `--include-incremental` | off          | Walk `raw/incremental/` (the second-run fixture).             |
+| `--source-ref-base`     | (autodetect) | Override the GitHub blob base for citations.                  |
+| `--today`               | system date  | Reference date for dunning interest + LLM legal deadlines.    |
 
 ## Repo layout
 
@@ -249,7 +260,7 @@ tests/test_factstore.py        stdlib unittest — FactStore + format_value
 
 ## Further reading
 
-- **`CLAUDE.md`** — operational notes, conventions, and gotchas (the *how*).
+- **`CLAUDE.md`** — operational notes, conventions, and gotchas (the _how_).
 - **`Tech Stack.md`** — what's deliberately not built and why (no DB, no
   vectors, no auth).
 - **`Sprint.md`** — the build plan and ownership split.
