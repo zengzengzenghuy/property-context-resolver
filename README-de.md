@@ -216,12 +216,15 @@ Outputs:
 
 ```
 out/
-  events.jsonl                  eine Zeile pro Source-Event
-  facts.jsonl                   das vollständige append-only-Faktenlog
-  llm_cache/summary.json        deterministischer Cache der LLM-Summary-Outputs
-  raw_bundle.txt                Konkatenation des Rohtexts zur Inspektion
-context.property.LIE-001.md     Dossier auf Liegenschafts-Ebene
-context.unit.EH-XXX.md          Dossier pro Einheit (eines pro Einheit)
+  events.jsonl                          eine Zeile pro Source-Event
+  facts.jsonl                           das vollständige append-only-Faktenlog
+  llm_cache/summary.json                deterministischer Cache der LLM-Summary-Outputs
+  raw_bundle.txt                        Konkatenation des Rohtexts zur Inspektion
+context/
+  context.property.template.md          Markdown-Skelett pro Liegenschaft
+  context.unit.template.md              Markdown-Skelett pro Einheit
+  context.property.LIE-001.md           Dossier auf Liegenschafts-Ebene
+  context.unit.EH-XXX.md                Dossier pro Einheit (eines pro Einheit)
 ```
 
 Der erste Lauf scaffoldet die Markdown-Dateien aus
@@ -237,7 +240,7 @@ die Dateien bereits gerendert wurden, lösche die betroffenen Dateien, damit
 sie aus dem Template neu scaffolden:
 
 ```bash
-rm context.unit.*.md context.property.*.md
+rm context/context.unit.*.md context/context.property.*.md
 python run.py raw/ --today 2026-04-25
 ```
 
@@ -267,7 +270,7 @@ CLI-Flags von `run.py`:
 | ----------------------- | -------------- | --------------------------------------------------------------------- |
 | `raw`                   | (erforderlich) | Pfad zum `raw/`-Korpus.                                               |
 | `--out`                 | `out`          | Output-Verzeichnis für `events.jsonl` / `facts.jsonl` / `llm_cache/`. |
-| `--repo-root`           | `cwd`          | Wo `context.{property,unit}.*.md` geschrieben werden.                 |
+| `--repo-root`           | `cwd`          | Wo das `context/`-Verzeichnis mit `context.{property,unit}.*.md` geschrieben wird. |
 | `--include-incremental` | aus            | Walked `raw/incremental/` (das Fixture für den zweiten Lauf).         |
 | `--source-ref-base`     | (auto-erkannt) | Überschreibt die GitHub-Blob-Basis für Zitate.                        |
 | `--today`               | Systemdatum    | Referenzdatum für Mahnzinsen + LLM-Rechtsfristen.                     |
@@ -295,8 +298,11 @@ extractor/                     die Engine
   sources/                     ein Connector pro Quellenart (stammdaten/emails/
                                briefe/rechnungen/bank)
   cli.py                       `python -m extractor.cli ingest`
-context.property.template.md   Markdown-Skelett pro Liegenschaft
-context.unit.template.md       Markdown-Skelett pro Einheit
+context/                       sämtliches gerendertes + Template-Markdown
+  context.property.template.md   Markdown-Skelett pro Liegenschaft
+  context.unit.template.md       Markdown-Skelett pro Einheit
+  context.property.LIE-001.md    gerendertes Dossier pro Liegenschaft
+  context.unit.EH-*.md           gerenderte Dossiers pro Einheit
 engine.aggregation-rules.md    PropertyAggregator §5.1 Spezifikation
 scripts/preocr.py              Pre-OCR-Cache-Builder
 scripts/upload_raw_bundle.py   lädt out/raw_bundle.txt nach Supabase hoch

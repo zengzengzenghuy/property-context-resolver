@@ -207,12 +207,15 @@ Outputs:
 
 ```
 out/
-  events.jsonl                  one row per source event
-  facts.jsonl                   the full append-only fact log
-  llm_cache/summary.json        deterministic cache of LLM summary outputs
-  raw_bundle.txt                concatenation of raw text for inspection
-context.property.LIE-001.md     property-level dossier
-context.unit.EH-XXX.md          per-unit dossier (one per Einheit)
+  events.jsonl                          one row per source event
+  facts.jsonl                           the full append-only fact log
+  llm_cache/summary.json                deterministic cache of LLM summary outputs
+  raw_bundle.txt                        concatenation of raw text for inspection
+context/
+  context.property.template.md          per-property Markdown skeleton
+  context.unit.template.md              per-unit Markdown skeleton
+  context.property.LIE-001.md           property-level dossier
+  context.unit.EH-XXX.md                per-unit dossier (one per Einheit)
 ```
 
 The first run scaffolds the Markdown files from
@@ -227,7 +230,7 @@ new block in `PROPERTY_BLOCKS` / `UNIT_BLOCKS` after files have already been
 rendered, delete the affected files so they re-scaffold from the template:
 
 ```bash
-rm context.unit.*.md context.property.*.md
+rm context/context.unit.*.md context/context.property.*.md
 python run.py raw/ --today 2026-04-25
 ```
 
@@ -285,8 +288,11 @@ extractor/                     the engine
   sources/                     one connector per source kind (stammdaten/emails/
                                briefe/rechnungen/bank)
   cli.py                       `python -m extractor.cli ingest`
-context.property.template.md   per-property Markdown skeleton
-context.unit.template.md       per-unit Markdown skeleton
+context/                       all rendered + template Markdown
+  context.property.template.md   per-property Markdown skeleton
+  context.unit.template.md       per-unit Markdown skeleton
+  context.property.LIE-001.md    rendered per-property dossier
+  context.unit.EH-*.md           rendered per-unit dossiers
 engine.aggregation-rules.md    PropertyAggregator §5.1 spec
 scripts/preocr.py              pre-OCR cache builder
 scripts/upload_raw_bundle.py   uploads out/raw_bundle.txt to Supabase

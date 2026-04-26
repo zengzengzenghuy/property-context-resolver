@@ -195,12 +195,15 @@ python run.py raw/ --include-incremental --today 2026-04-25
 
 ```
 out/
-  events.jsonl                  每个源事件一行
-  facts.jsonl                   完整的 append-only 事实日志
-  llm_cache/summary.json        LLM 摘要输出的确定性缓存
-  raw_bundle.txt                便于检查的原始文本拼接
-context.property.LIE-001.md     物业级档案
-context.unit.EH-XXX.md          单元级档案（每个单元一份）
+  events.jsonl                          每个源事件一行
+  facts.jsonl                           完整的 append-only 事实日志
+  llm_cache/summary.json                LLM 摘要输出的确定性缓存
+  raw_bundle.txt                        便于检查的原始文本拼接
+context/
+  context.property.template.md          物业级 Markdown 骨架
+  context.unit.template.md              单元级 Markdown 骨架
+  context.property.LIE-001.md           物业级档案
+  context.unit.EH-XXX.md                单元级档案（每个单元一份）
 ```
 
 首次运行会从 `context.property.template.md` / `context.unit.template.md`
@@ -214,7 +217,7 @@ Merger 只在新文件中**脚手架**新块。如果在文件已渲染之后才
 脚手架：
 
 ```bash
-rm context.unit.*.md context.property.*.md
+rm context/context.unit.*.md context/context.property.*.md
 python run.py raw/ --today 2026-04-25
 ```
 
@@ -244,7 +247,7 @@ python -m unittest discover tests                # 全部
 | ----------------------- | ------------ | ---------------------------------------------------------- |
 | `raw`                   | （必填）     | `raw/` 语料的路径。                                        |
 | `--out`                 | `out`        | `events.jsonl` / `facts.jsonl` / `llm_cache/` 的输出目录。 |
-| `--repo-root`           | `cwd`        | `context.{property,unit}.*.md` 的写入位置。                |
+| `--repo-root`           | `cwd`        | `context/` 目录及其中 `context.{property,unit}.*.md` 的写入位置。 |
 | `--include-incremental` | 关闭         | 遍历 `raw/incremental/`（第二次运行的 fixture）。          |
 | `--source-ref-base`     | （自动检测） | 覆盖引用所用的 GitHub blob 基址。                          |
 | `--today`               | 系统日期     | 催收利息和 LLM 法定期限的参考日期。                        |
@@ -272,8 +275,11 @@ extractor/                     引擎本体
   sources/                     每种源类型一个连接器（stammdaten / emails /
                                briefe / rechnungen / bank）
   cli.py                       `python -m extractor.cli ingest`
-context.property.template.md   物业级 Markdown 骨架
-context.unit.template.md       单元级 Markdown 骨架
+context/                       所有渲染后的 + 模板 Markdown
+  context.property.template.md   物业级 Markdown 骨架
+  context.unit.template.md       单元级 Markdown 骨架
+  context.property.LIE-001.md    渲染后的物业级档案
+  context.unit.EH-*.md           渲染后的单元级档案
 engine.aggregation-rules.md    PropertyAggregator §5.1 规范
 scripts/preocr.py              预 OCR 缓存构建器
 scripts/upload_raw_bundle.py   将 out/raw_bundle.txt 上传至 Supabase

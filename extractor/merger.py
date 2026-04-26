@@ -154,8 +154,8 @@ class PropertyMerger(_BaseMerger):
         util_ids, nonutil_ids = _dienstleister_split(store)
         return cls(
             fact_store=store,
-            template_path=repo_root / "context.property.template.md",
-            output_path=repo_root / f"context.property.{property_id}.md",
+            template_path=repo_root / "context" / "context.property.template.md",
+            output_path=repo_root / "context" / f"context.property.{property_id}.md",
             blocks=PROPERTY_BLOCKS,
             ctx={
                 "property_id": property_id,
@@ -191,8 +191,8 @@ class UnitMerger(_BaseMerger):
                     tenant_ids.append(fact.entity_id)
         return cls(
             fact_store=store,
-            template_path=repo_root / "context.unit.template.md",
-            output_path=repo_root / f"context.unit.{unit_id}.md",
+            template_path=repo_root / "context" / "context.unit.template.md",
+            output_path=repo_root / "context" / f"context.unit.{unit_id}.md",
             blocks=UNIT_BLOCKS,
             ctx={
                 "unit_id": unit_id,

@@ -213,7 +213,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"conflicts:        {raw_conflicts:>5}")
     print(f"dunning facts:    {dunning_emitted:>5}  ({len(active_tenants)} active leases)")
     print(f"aggregator facts: {aggregator_emitted:>5}")
-    print(f"property file:    {repo_root / f'context.property.{PROPERTY_ID}.md'}")
+    print(f"property file:    {repo_root / 'context' / f'context.property.{PROPERTY_ID}.md'}")
     print(f"unit files:       {unit_stats['rendered']:>5} rendered "
           f"({unit_stats['fresh']} fresh, {unit_stats['blocks_replaced']} block replacements)")
     if sb.enabled:
