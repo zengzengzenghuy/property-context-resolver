@@ -50,12 +50,13 @@ bank/        ─┘   (Event, [Fact])  (filter rules) (identity-     │
                                        │           │   facts           │
                                        ▼                                │
                                 PropertyMerger / UnitMerger ────────────┘
-                                       │       (block registry: blocks.py)
-                                       ▼
-                                  Summarizer ◄── ANTHROPIC_API_KEY
-                                  (Signal-First, cached, no-op without key)
-                                       │
-                                       ▼
+                                     │       (block registry: blocks.py)
+                                     ▼
+                                Summarizer ◄── ANTHROPIC_API_KEY
+                                (Signal-First, cached, or GEMINI_API_KEY)
+                                     │
+                                     ▼
+
                                   Supabase (optional mirror, no-op without keys)
 ```
 
@@ -183,7 +184,8 @@ at the top — copy that pattern when adding new cases.
 
 | Variable                      | Used by                | Effect when unset                            |
 |-------------------------------|------------------------|----------------------------------------------|
-| `ANTHROPIC_API_KEY`           | `extractor/summarizer.py` | `<!-- auto:*.summary -->` blocks render the deterministic fallback string. |
+| `ANTHROPIC_API_KEY`           | `extractor/summarizer.py` | enables Claude summaries; if missing, falls back to `GEMINI_API_KEY`. |
+| `GEMINI_API_KEY`              | `extractor/summarizer.py` | enables Gemini summaries; used if `ANTHROPIC_API_KEY` is missing. |
 | `SUPABASE_URL` + `SUPABASE_SERVICE_KEY` | `extractor/sb.py` | Supabase mirror is skipped; local Markdown still written. |
 | `SOURCE_REF_BASE`             | `extractor/source_ref.py` | Autodetect from `git remote` + current branch; fall back to local absolute path. |
 
