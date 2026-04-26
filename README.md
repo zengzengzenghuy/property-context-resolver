@@ -16,17 +16,19 @@ flagship tenant in dunning (`MIE-001`).
 
 ## Why this matters for property managers
 
-- **One auditable dossier per Liegenschaft.** Stammdaten, E-Mails, Briefe,
-  Rechnungen, Kontoauszüge → one `context.property.<ID>.md` + one
-  `context.unit.<EH>.md` per Einheit. Identitäten (`Eigentümer` /
-  `MietEig` / `Kontakt`) werden über E-Mail, IBAN, Einheit-Nr. aufgelöst.
-- **Surgische Updates, keine Voll-Regeneration.** Der Merger schreibt nur
-  innerhalb `<!-- auto:NAME -->`-Blöcke — handgepflegte Notizen und
-  WEG-Beschlüsse bleiben Lauf für Lauf erhalten.
-- **Signal-First mit Beweis.** Deterministische Filter pro Sektion lassen
-  nur relevante Fakten zum LLM; jede gerenderte Zeile zitiert ihre Quelle
-  als klickbare GitHub-URL. Rechtsstand bleibt aktuell via TavilyOracle
-  (§ 247 BGB Basiszinssatz, BGB-Novellen, Berliner Mietspiegel).
+- **One auditable dossier per Liegenschaft (property).** Stammdaten (master
+  data), emails, letters, invoices, bank statements → one
+  `context.property.<ID>.md` + one `context.unit.<EH>.md` per Einheit (unit).
+  Identities (`Eigentümer` (owner) / `MietEig` (tenant-owner) / `Kontakt`
+  (contact)) are resolved via email, IBAN, and Einheit-Nr. (unit number).
+- **Surgical updates, no full regeneration.** The Merger writes only inside
+  `<!-- auto:NAME -->` blocks — hand-maintained notes and WEG-Beschlüsse
+  (homeowner-association resolutions) are preserved run after run.
+- **Signal-First with proof.** Deterministic per-section filters pass only
+  relevant facts to the LLM; every rendered line cites its source as a
+  clickable GitHub URL. Legal status stays current via TavilyOracle
+  (§ 247 BGB Basiszinssatz (statutory base interest rate), BGB-Novellen
+  (Civil Code amendments), Berliner Mietspiegel (Berlin rent index)).
 
 ## What it does
 
